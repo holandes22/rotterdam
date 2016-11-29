@@ -30,7 +30,12 @@ var common = {
       {
         test: /\.(ttf|eot|svg|woff2?)$/,
         loader: "file?name=/fonts/[name].[ext]",
-      }
+      },
+      {
+        test: /\.elm$/,
+        exclude: [/elm-stuff/, /node_modules/],
+        loader: "elm-webpack?cwd=" + __dirname + "/web/elm"
+      },
     ]
   },
   plugins: [
