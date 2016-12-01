@@ -14,9 +14,8 @@
   <body>
     <div id="layout">
         <!-- Menu toggle -->
-        <a href="#menu" class="menu-link">
-            <!-- Hamburger icon -->
-            <span></span>
+        <a href="#" class="menu-link">
+          <i class="fa fa-bars"></i>
         </a>
 
         <div id="nav-side-menu">

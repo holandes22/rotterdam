@@ -24,12 +24,16 @@ var common = {
         loader: "style-loader!css-loader!sass-loader"
       },
       {
-        test: /\.(png|jpg|gif|svg)$/,
-        loader: "file?name=/images/[name].[ext]"
+        test: /\.png$/,
+        loader: 'file'
       },
       {
-        test: /\.(ttf|eot|svg|woff2?)$/,
-        loader: "file?name=/fonts/[name].[ext]",
+        test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
+        loader: "file"
+      },
+      {
+        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        loader: "url"
       },
       {
         test: /\.elm$/,
@@ -52,6 +56,7 @@ module.exports = [
     entry: [
       "normalize.css",
       "purecss/build/pure.css",
+      "font-awesome-loader",
       "./web/static/app/app.scss",
       "./web/static/app/app.js"
     ],
@@ -66,7 +71,7 @@ module.exports = [
       ]
     },
     plugins: [
-      new CopyWebpackPlugin([{ from: "./web/static/assets"}]),
+      new CopyWebpackPlugin([{ from: "./web/static/assets" }]),
       new ExtractTextPlugin("css/app.css")
     ]
   })
