@@ -4,4 +4,4 @@ import Html exposing (..)
 
 
 main =
-    text "Hello from elm"
+    text "Elm events!"

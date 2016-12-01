@@ -1,0 +1,156 @@
+$menu-width: 150px;
+$mobile-break-point: 50em;
+
+.pure-img-responsive {
+    max-width: 100%;
+    height: auto;
+}
+
+/*
+Add transition to containers so they can push in and out.
+*/
+#layout,
+#menu,
+.menu-link {
+    -webkit-transition: all 0.2s ease-out;
+    -moz-transition: all 0.2s ease-out;
+    -ms-transition: all 0.2s ease-out;
+    -o-transition: all 0.2s ease-out;
+    transition: all 0.2s ease-out;
+}
+
+#layout {
+    position: relative;
+    padding-left: 0;
+}
+    #layout.active #nav-side-menu {
+        left: 150px;
+        width: 150px;
+    }
+
+    #layout.active .menu-link {
+        left: 150px;
+    }
+
+#nav-side-menu {
+    margin-left: -$menu-width; /* "#menu" width */
+    width: $menu-width;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000;
+    background: #191818;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    a {
+        color: #999;
+        border: none;
+        padding: 0.6em 0 0.6em 0.6em;
+    }
+
+   .pure-menu {
+     ul {
+      border: none;
+      background: transparent;
+      border-top: 1px solid #333;
+     }
+
+     .menu-item-divided {
+        border-top: 1px solid #333;
+     }
+   }
+
+  .pure-menu-selected {
+    background: #1f8dd6;
+    a {
+      color: #fff;
+    }
+  }
+
+  .pure-menu-heading {
+    background: #1f8dd6;
+    font-size: 110%;
+    color: #fff;
+    margin: 0;
+  }
+
+}
+
+
+.menu-link {
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  background: #000;
+  background: rgba(0,0,0,0.7);
+  font-size: 10px;
+  z-index: 10;
+  width: 2em;
+  height: auto;
+  padding: 2.1em 1.6em;
+
+  :hover, :focus {
+    background: #000;
+  }
+
+  span {
+    position: relative;
+    display: block;
+    background-color: #fff;
+    width: 100%;
+    height: 0.2em;
+
+    :before, :after {
+      position: absolute;
+      margin-top: -0.6em;
+      content: " ";
+    }
+
+    :after {
+      margin-top: 0.6em;
+    }
+  }
+
+}
+
+
+
+/* -- Responsive Styles (Media Queries) ------------------------------------- */
+
+@media (min-width: $mobile-break-point) {
+
+  .header,
+  .content {
+    padding-left: 2em;
+    padding-right: 2em;
+  }
+
+  #layout {
+    padding-left: $menu-width;
+    left: 0;
+
+    .active .menu-link {
+      left: $menu-width;
+    }
+  }
+  #nav-side-menu {
+    left: $menu-width;
+  }
+
+  .menu-link {
+    position: fixed;
+    left: $menu-width;
+    display: none;
+  }
+
+}
+
+@media (max-width: $mobile-break-point) {
+  #layout.active {
+    position: relative;
+    left: $menu-width;
+  }
+}
+

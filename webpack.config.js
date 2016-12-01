@@ -11,7 +11,7 @@ var common = {
         test: /\.js$/,
         exclude: [/node_modules/],
         loader: "babel",
-        options: {
+        query: {
           presets: ["es2015"]
         }
       },
@@ -36,7 +36,8 @@ var common = {
         exclude: [/elm-stuff/, /node_modules/],
         loader: "elm-webpack?cwd=" + __dirname + "/web/elm"
       },
-    ]
+    ],
+    noParse: [/\.elm$/]
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({
@@ -50,6 +51,7 @@ module.exports = [
   merge(common, {
     entry: [
       "normalize.css",
+      "purecss/build/pure.css",
       "./web/static/app/app.scss",
       "./web/static/app/app.js"
     ],
