@@ -1,6 +1,12 @@
-$menu-width: 10em;
+$menu-width: 17em;
 $mobile-break-point: 50em;
 $menu-link-size: 1em;
+
+$accent-color: #e24b31;
+$background-color: #2e3642;
+$text-color: #e2e2e2;
+//nice dark blue: #1d2837;
+// original background: #191818;
 
 
 /*
@@ -30,48 +36,72 @@ Add transition to containers so they can push in and out.
 */
 
 #nav-side-menu {
-  margin-left: -$menu-width; /* "#menu" width */
+  margin-left: -$menu-width;
   width: $menu-width;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   z-index: 1000;
-  background: #191818;
+  background: $accent-color;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  a {
-    color: #999;
-    border: none;
-    padding: 0.6em 0 0.6em 0.6em;
-  }
 
- .pure-menu {
-    ul {
-      border: none;
-      background: transparent;
-      border-top: 1px solid #333;
-    }
-
-    .menu-item-divided {
-      border-top: 1px solid #333;
-    }
-  }
-
-  .pure-menu-selected {
-    a {
-      color: #fff;
-    }
-  }
-
-  .pure-menu-heading {
-    background: #1f8dd6;
-    font-size: 110%;
-    color: #fff;
+  a.pure-menu-heading {
     margin: 0;
-  }
-}
+    padding: 1em;
+    color: rgba(0,0,0,0.4);
+    text-shadow: 0 0 1px rgba(0,0,0,0.1);
+    font-size: 1.8em;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: default;
 
+  }
+
+  ul.pure-menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      .pure-menu-selected  {
+        background: #ad4636;
+        color: #fff;
+      }
+      a {
+        display: block;
+        padding: 1em 1em 1em 1.2em;
+        outline: none;
+        border-bottom: 1px solid rgba(0,0,0,0.2);
+        color: $text-color;
+        text-transform: uppercase;
+        text-shadow: 0 0 1px rgba(255,255,255,0.1);
+        letter-spacing: 1px;
+        -webkit-transition: background 0.3s;
+        transition: background 0.3s;
+
+        > i {
+          margin-right: 20px;
+          font-size: 20px;
+
+          &:before {
+            vertical-align: middle;
+          }
+        }
+
+        &:hover {
+          background: #ad4636;
+        }
+      }
+
+      &:first-child a {
+        border-top: 1px solid rgba(0,0,0,0.2);
+      }
+    }
+  }
+
+}
 
 .menu-link {
   position: fixed;
