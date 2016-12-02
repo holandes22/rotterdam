@@ -1,11 +1,12 @@
-$menu-width: 17em;
+$menu-width: 18em;
 $mobile-break-point: 50em;
 $menu-link-size: 1em;
 
 $accent-color: #e24b31;
 $background-color: #2e3642;
 $text-color: #e2e2e2;
-//nice dark blue: #1d2837;
+$dark-blue-color: #1d2837;
+$selected-color: #ad4636;
 // original background: #191818;
 
 
@@ -20,20 +21,18 @@ Add transition to containers so they can push in and out.
   transition: all 0.2s ease-out;
 }
 
-/*
 #layout {
   position: relative;
   padding-left: 0;
   .active #nav-side-menu {
-      left: $menu-width;
-      width: $menu-width;
+    left: $menu-width;
+    width: $menu-width;
   }
 
   .active .menu-link {
-      left: $menu-width;
+    left: $menu-width;
   }
 }
-*/
 
 #nav-side-menu {
   margin-left: -$menu-width;
@@ -65,9 +64,9 @@ Add transition to containers so they can push in and out.
     padding: 0;
 
     li {
-      .pure-menu-selected  {
-        background: #ad4636;
-        color: #fff;
+
+      .pure-menu-selected {
+        background: $selected-color;
       }
       a {
         display: block;
@@ -81,6 +80,7 @@ Add transition to containers so they can push in and out.
         -webkit-transition: background 0.3s;
         transition: background 0.3s;
 
+
         > i {
           margin-right: 20px;
           font-size: 20px;
@@ -90,8 +90,8 @@ Add transition to containers so they can push in and out.
           }
         }
 
-        &:hover {
-          background: #ad4636;
+        &:hover, &:visited {
+          background: $selected-color;
         }
       }
 
@@ -115,8 +115,8 @@ Add transition to containers so they can push in and out.
   height: $menu-link-size;
   padding: $menu-link-size $menu-link-size;
 
-  :hover, :focus {
-    color: blue;
+  &:hover, &:focus {
+    color: $dark-blue-color;
   }
 
 }
@@ -125,12 +125,6 @@ Add transition to containers so they can push in and out.
 /* -- Responsive Styles (Media Queries) ------------------------------------- */
 
 @media (min-width: $mobile-break-point) {
-
-  .header,
-  .content {
-    padding-left: 2em;
-    padding-right: 2em;
-  }
 
   #layout {
     padding-left: $menu-width;
@@ -155,6 +149,9 @@ Add transition to containers so they can push in and out.
 @media (max-width: $mobile-break-point) {
   #layout.active {
     position: relative;
+    left: $menu-width;
+  }
+  #nav-side-menu.active {
     left: $menu-width;
   }
 }

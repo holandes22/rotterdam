@@ -14,11 +14,11 @@
   <body>
     <div id="layout">
         <!-- Menu toggle -->
-        <a href="#" class="menu-link">
-          <i class="fa fa-bars"></i>
-        </a>
 
         <div id="nav-side-menu">
+          <a href="#" class="menu-link">
+            <i class="fa fa-bars"></i>
+          </a>
           <div class="pure-menu">
             <a class="pure-menu-heading" href="#">
               <i class="fa fa-anchor"></i> Rotterdam
@@ -30,6 +30,12 @@
               </li>
               <li class="pure-menu-item">
                 <a href="#" class="pure-menu-link"><i class="fa fa-arrows"></i> Services</a>
+              </li>
+              <li class="pure-menu-item">
+                <a href="#" class="pure-menu-link pure-menu-selected"> Selected</a>
+              </li>
+              <li class="pure-menu-item pure-menu-disabled">
+                <a href="#" class="pure-menu-link"> Disabled</a>
               </li>
             </ul>
           </div>
