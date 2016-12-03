@@ -1,4 +1,5 @@
-$menu-width: 18em;
+$menu-width-value: 18;
+$menu-width: #{$menu-width-value}em;
 $mobile-break-point: 50em;
 $menu-link-size: 1em;
 
@@ -13,7 +14,7 @@ $selected-color: #ad4636;
 /*
 Add transition to containers so they can push in and out.
 */
-#layout, #nav-side-menu, .menu-link {
+#layout, #nav-side-menu, .close {
   -webkit-transition: all 0.2s ease-out;
   -moz-transition: all 0.2s ease-out;
   -ms-transition: all 0.2s ease-out;
@@ -29,9 +30,6 @@ Add transition to containers so they can push in and out.
     width: $menu-width;
   }
 
-  .active .menu-link {
-    left: $menu-width;
-  }
 }
 
 #nav-side-menu {
@@ -46,6 +44,21 @@ Add transition to containers so they can push in and out.
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 
+  a.close {
+    position: absolute;
+    top: 0;
+    left: #{$menu-width-value - 2}em;
+    padding: 5px;
+    display: block;
+    color: rgba(0,0,0,0.4);
+    text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+
+    &:hover {
+      color: rgba(0,0,0,0.6);
+    }
+
+  }
+
   a.pure-menu-heading {
     margin: 0;
     padding: 1em;
@@ -55,7 +68,6 @@ Add transition to containers so they can push in and out.
     text-align: center;
     text-transform: uppercase;
     cursor: default;
-
   }
 
   ul.pure-menu-list {
@@ -64,7 +76,6 @@ Add transition to containers so they can push in and out.
     padding: 0;
 
     li {
-
       .pure-menu-selected {
         background: $selected-color;
       }
@@ -109,14 +120,14 @@ Add transition to containers so they can push in and out.
   top: 0;
   left: 0;
   color: white;
-  background: rgba(0,0,0,0.7);
-  z-index: 10;
+  background: rgba(0,0,0,0.6);
   width: $menu-link-size;
   height: $menu-link-size;
   padding: $menu-link-size $menu-link-size;
 
   &:hover, &:focus {
-    color: $dark-blue-color;
+    color: rgba(255,255,255,0.5);
+    background: rgba(0,0,0,0.7);
   }
 
 }
@@ -129,19 +140,10 @@ Add transition to containers so they can push in and out.
   #layout {
     padding-left: $menu-width;
     left: 0;
-
-    .active .menu-link {
-      left: $menu-width;
-    }
   }
+
   #nav-side-menu {
     left: $menu-width;
-  }
-
-  .menu-link {
-    position: fixed;
-    left: $menu-width;
-    display: none;
   }
 
 }

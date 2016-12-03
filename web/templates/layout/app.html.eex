@@ -16,9 +16,14 @@
         <!-- Menu toggle -->
 
         <div id="nav-side-menu">
-          <a href="#" class="menu-link">
+          <a class="menu-link">
             <i class="fa fa-bars"></i>
           </a>
+          <a class="close">
+            <i class="fa fa-close"></i>
+          </a>
+
+
           <div class="pure-menu">
             <a class="pure-menu-heading" href="#">
               <i class="fa fa-anchor"></i> Rotterdam
