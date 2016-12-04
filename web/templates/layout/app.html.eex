@@ -31,7 +31,7 @@
 
             <ul class="pure-menu-list">
               <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link"><i class="fa fa-window-restore"></i> Nodes</a>
+                <a href="#" class="pure-menu-link"><i class="fa fa-cubes"></i> Nodes</a>
               </li>
               <li class="pure-menu-item">
                 <a href="#" class="pure-menu-link"><i class="fa fa-arrows"></i> Services</a>
