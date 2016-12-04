@@ -1,4 +1,4 @@
-$menu-width-value: 18;
+$menu-width-value: 17;
 $menu-width: #{$menu-width-value}em;
 $mobile-break-point: 50em;
 $menu-link-size: 1em;
@@ -8,7 +8,6 @@ $background-color: #2e3642;
 $text-color: #e2e2e2;
 $dark-blue-color: #1d2837;
 $selected-color: #ad4636;
-// original background: #191818;
 
 
 /*
@@ -45,11 +44,11 @@ Add transition to containers so they can push in and out.
   -webkit-overflow-scrolling: touch;
 
   a.close {
+    display: block;
     position: absolute;
     top: 0;
     left: #{$menu-width-value - 2}em;
     padding: 5px;
-    display: block;
     color: rgba(0,0,0,0.4);
     text-shadow: 0 1px 0 rgba(255,255,255,0.2);
 
@@ -146,6 +145,10 @@ Add transition to containers so they can push in and out.
     left: $menu-width;
   }
 
+  .menu-link, a.close i {
+    display: none;
+  }
+
 }
 
 @media (max-width: $mobile-break-point) {
@@ -156,5 +159,5 @@ Add transition to containers so they can push in and out.
   #nav-side-menu.active {
     left: $menu-width;
   }
-}
 
+}
