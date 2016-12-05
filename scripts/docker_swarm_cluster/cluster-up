@@ -1,0 +1,36 @@
+#! /usr/bin/env bash
+
+set -e
+
+CYAN='\033[0;36m'
+YELLOW='\033[0;33m'
+BOLD_GREEN='\033[1;32m'
+NC='\033[0m'
+
+number_of_nodes=3
+
+if ! [[ -v DM_CLUSTER_ID ]]; then
+    export DM_CLUSTER_ID=1
+fi
+
+if [[ -v DM_CLUSTER_NUMBER_OF_NODES ]]; then
+    number_of_nodes=$DM_CLUSTER_NUMBER_OF_NODES
+fi
+
+echo -e "${CYAN}Using cluster ID: $DM_CLUSTER_ID"
+echo "Using number of nodes: ${number_of_nodes}"
+echo
+echo -e "CREATING NODES (Virtualbox VMs handled by docker-machine)${NC}"
+ansible-playbook create_docker_machines.yml -i create_docker_machines_hosts -e number_of_nodes=${number_of_nodes}
+
+echo -e "${YELLOW}CLUSTER IS FORMED BY THE FOLLOWING NODES:"
+echo
+docker-machine ls --filter name=cluster${DM_CLUSTER_ID}-node
+echo -e "${NC}"
+
+echo -e "${CYAN}CREATING DOCKER SWARM CLUSTER${NC}"
+ansible-playbook -i cluster_inventory.py playbook.yml
+
+manager_ip_address=`docker-machine ip cluster${DM_CLUSTER_ID}-node1`
+
+echo -e "Done. Swarm manager is ${BOLD_GREEN}cluster${DM_CLUSTER_ID}-node1${NC} with IP address ${BOLD_GREEN}$manager_ip_address${NC}"

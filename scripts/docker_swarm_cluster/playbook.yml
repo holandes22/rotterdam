@@ -1,0 +1,29 @@
+- hosts: all
+
+  tasks:
+    - name: "init swarm in manager"
+      shell: docker swarm init
+             --advertise-addr {{ip_address}}
+      register: result
+      when: is_manager
+      changed_when: "'This node is already part of a swarm' not in result.stderr"
+      failed_when: "result.rc == 1 and 'This node is already part of a swarm' not in result.stderr"
+
+    - name: "obtain worker token from manager"
+      local_action: command
+                    docker-machine ssh cluster{{ cluster_id }}-node1
+                    'docker swarm join-token worker --quiet'
+      register: worker_token_cmd
+      when: not is_manager
+
+    - name: "add worker to cluster"
+      shell: docker swarm join
+             --token {{worker_token_cmd.stdout}}
+             {{ manager_ip_address }}:2377
+      register: result
+      when: not is_manager
+      changed_when: "'This node is already part of a swarm' not in result.stderr"
+      failed_when: "result.rc == 1 and 'This node is already part of a swarm' not in result.stderr"
+
+
+

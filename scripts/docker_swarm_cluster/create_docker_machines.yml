@@ -1,0 +1,30 @@
+- hosts: all
+
+  vars:
+    cluster_id: 1
+    number_of_nodes: 3
+
+  tasks:
+    - name: "create docker machines"
+      local_action: command docker-machine create --driver virtualbox cluster{{ cluster_id }}-node{{ item }}
+      with_sequence: start=1 end={{ number_of_nodes }}
+      register: result
+      changed_when: "'Host already exists' not in result.stderr"
+      failed_when: "result.rc == 1 and 'Host already exists' not in result.stderr"
+
+    - name: "get docker machine names"
+      local_action: command docker-machine ls --filter name=cluster{{ cluster_id }}-node --format=\{\{.Name\}\}
+      register: machine_names
+
+    - name: "provision docker machines"
+      local_action: command docker-machine ssh {{ item }} 'tce-load -wi python'
+      register: result
+      with_items: "{{machine_names.stdout.splitlines()}}"
+      changed_when: "'python is already installed' not in result.stdout"
+
+    - name: "create python links"
+      local_action: command docker-machine ssh {{ item }} 'sudo ln -s /usr/local/bin/python /usr/bin/python'
+      register: result
+      changed_when: "'File exists' not in result.stderr"
+      failed_when: "result.rc == 1 and 'File exists' not in result.stderr"
+      with_items: "{{machine_names.stdout.splitlines()}}"
