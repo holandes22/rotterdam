@@ -39,7 +39,7 @@ defmodule Rotterdam.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:tesla, path: "/home/pablo/projects/tesla"},
+      {:tesla, "~> 0.5.2"},
       {:poison, "~> 1.5"},
       {:hackney, "~> 1.6.3"},
       {:httpoison, "~> 0.10.0"},

@@ -1,25 +1,7 @@
-defmodule Docker.ContainerSpec do
-  defstruct image: nil
-end
-
-defmodule Docker.TaskTemplate do
-  defstruct container_spec: %Docker.ContainerSpec{}
-end
-
-defmodule Docker.ServiceConfig do
-
-  defstruct name: nil,
-    task_template: %Docker.TaskTemplate{},
-    mode: %{
-      replicated: %{
-        replicas: 1
-      }
-    },
-    labels: %{}
-end
-
 defmodule Docker.Client do
   use Tesla
+
+  alias Docker.Spec.Service
 
   @base_url "https://192.168.99.100:2376"
   @cert_path "/home/pablo/.docker/machine/machines/cluster1-node1"
@@ -38,11 +20,8 @@ defmodule Docker.Client do
   def tasks, do: get("/tasks") |> response
   def tasks(id), do: get("/tasks/" <> id) |> response
 
-  def create_service do
-    config = %Docker.ServiceConfig{
-      name: "web2",
-    }
-    config = put_in(config.task_template.container_spec.image, "nginx")
+  def create_service(name, image) do
+    config = Service.config_struct(name, image)
     config = format_keys(config)
     post("/services/create", config) |> response
   end
