@@ -30,13 +30,13 @@ defmodule Docker.Client do
 
   adapter Tesla.Adapter.Hackney, [ssl_options: @ssl_options]
 
-  def images do
-    get("/images/json") |> response
-  end
+  def images, do: get("/images/json") |> response
 
-  def services do
-    get("/services") |> response
-  end
+  def services, do: get("/services") |> response
+  def services(id), do: get("/services/" <> id) |> response
+
+  def tasks, do: get("/tasks") |> response
+  def tasks(id), do: get("/tasks/" <> id) |> response
 
   def create_service do
     config = %Docker.ServiceConfig{
