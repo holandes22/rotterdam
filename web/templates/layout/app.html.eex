@@ -48,7 +48,7 @@
 
         <main role="main">
           <a class="pure-button" href="#">A Pure Button</a>
-          <button class="pure-button">A Pure Button</button>
+          <button class="pure-button">Another Pure Button</button>
 
           <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
           <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>

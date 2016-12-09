@@ -22,12 +22,11 @@ defmodule Docker.Client do
 
   def create_service(name, image) do
     config = Service.config_struct(name, image)
-    config = format_keys(config)
     post("/services/create", config) |> response
   end
 
   def events(stream_to) do
-    # TODO: PR to Tesla. hackney adapter is not handling {:ok, %HTTPoison.AsyncResponse{id: #Reference<pid>}}
+    # TODO: PR to Tesla. hackney adapter is not handling {:ok, #Reference<pid>}
     #get("/events", opts: [async: true, stream_to: stream_to, recv_timeout: :infinity])
     HTTPoison.get "#{@base_url}/event", %{}, stream_to: stream_to, recv_timeout: :infinity, ssl: @ssl_options
   end
@@ -39,24 +38,6 @@ defmodule Docker.Client do
       _   ->
         {:error, body, status}
     end
-
   end
-
-  def format_keys(%{__struct__: _} = struct) do
-    Map.from_struct(struct) |> format_keys
-  end
-  def format_keys(map) when is_map(map) do
-    Enum.reduce(map, %{}, &format_key/2)
-  end
-
-  defp format_key({key, value}, accumulator) when is_map(value) do
-    put_in(accumulator, [camelize_key(key)], format_keys(value))
-  end
-  defp format_key({key, value}, accumulator) do
-    put_in(accumulator, [camelize_key(key)], value)
-  end
-
-  defp camelize_key(key) when is_atom(key), do: key |> Atom.to_string |> camelize_key
-  defp camelize_key(key), do: Phoenix.Naming.camelize(key)
 
 end

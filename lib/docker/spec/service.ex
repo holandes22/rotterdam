@@ -1,6 +1,7 @@
 defmodule Docker.Spec.Service do
 
   alias Docker.Spec.TaskTemplate
+  import Docker.Spec.Utils, only: [format_keys: 1]
 
   defstruct name: nil,
     task_template: %TaskTemplate{},
@@ -11,9 +12,9 @@ defmodule Docker.Spec.Service do
     },
     labels: %{}
 
-
   def config_struct(name, image) do
-    config = %__MODULE__{name: name}
-    put_in(config.task_template.container_spec.image, image)
+    %__MODULE__{name: name}
+      |> format_keys
+      |> put_in(["TaskTemplate", "ContainerSpec", "Image"], image)
   end
 end
