@@ -3,14 +3,26 @@ defmodule Docker.Client do
 
   alias Docker.Spec.Service
 
-  @base_url "https://192.168.99.100:2376"
-  @cert_path "/home/pablo/.docker/machine/machines/cluster1-node1"
-  @ssl_options [certfile: @cert_path <> "/cert.pem", cacertfile: @cert_path <> "/ca.pem", keyfile: @cert_path <> "/key.pem"]
-
-  plug Tesla.Middleware.BaseUrl, @base_url
+  plug Tesla.Middleware.BaseUrl, base_url
   plug Tesla.Middleware.JSON
 
-  adapter Tesla.Adapter.Hackney, [ssl_options: @ssl_options]
+  adapter fn(env) ->
+    Tesla.Adapter.Hackney.call(env, [ssl_options: ssl_options])
+  end
+
+  def base_url do
+    app_config = Application.get_env(:rotterdam, Docker.Client)
+
+    "https://#{app_config[:host]}:#{app_config[:port]}"
+  end
+
+  def ssl_options do
+    cert_path = Application.get_env(:rotterdam, Docker.Client)[:cert_path]
+
+    [certfile: cert_path <> "/cert.pem",
+     cacertfile: cert_path <> "/ca.pem",
+     keyfile: cert_path <> "/key.pem"]
+  end
 
   def images, do: get("/images/json") |> response
 
@@ -28,7 +40,7 @@ defmodule Docker.Client do
   def events(stream_to) do
     # TODO: PR to Tesla. hackney adapter is not handling {:ok, #Reference<pid>}
     #get("/events", opts: [async: true, stream_to: stream_to, recv_timeout: :infinity])
-    HTTPoison.get "#{@base_url}/event", %{}, stream_to: stream_to, recv_timeout: :infinity, ssl: @ssl_options
+    HTTPoison.get "#{base_url}/event", %{}, stream_to: stream_to, recv_timeout: :infinity, ssl: ssl_options
   end
 
   def response(%Tesla.Env{body: body, status: status}) do

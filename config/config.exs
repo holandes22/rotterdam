@@ -9,6 +9,11 @@ use Mix.Config
 config :rotterdam,
   ecto_repos: [Rotterdam.Repo]
 
+config :rotterdam, Docker.Client,
+  host: System.get_env("ROTTERDAM_DOCKER_HOST"),
+  port: String.to_integer(System.get_env("ROTTERDAM_DOCKER_PORT") || "2376"),
+  cert_path: System.get_env("ROTTERDAM_DOCKER_CERT_PATH")
+
 # Configures the endpoint
 config :rotterdam, Rotterdam.Endpoint,
   url: [host: "localhost"],
