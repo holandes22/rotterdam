@@ -25,17 +25,24 @@ defmodule Docker.Client do
   end
 
   def images, do: get("/images/json") |> response
+  def images(id), do: get("/images/#{id}/json") |> response
+
+  def containers, do: get("/containers/json") |> response
+  def containers(id), do: get("/containers/#{id}/json") |> response
 
   def services, do: get("/services") |> response
-  def services(id), do: get("/services/" <> id) |> response
-
-  def tasks, do: get("/tasks") |> response
-  def tasks(id), do: get("/tasks/" <> id) |> response
+  def services(id), do: get("/services/#{id}") |> response
 
   def create_service(name, image) do
     config = Service.config_struct(name, image)
     post("/services/create", config) |> response
   end
+
+  def remove_service(id), do: delete("/services/#{id}")
+
+  def tasks, do: get("/tasks") |> response
+  def tasks(id), do: get("/tasks/#{id}") |> response
+
 
   def events(stream_to) do
     # TODO: PR to Tesla. hackney adapter is not handling {:ok, #Reference<pid>}
