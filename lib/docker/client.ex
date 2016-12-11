@@ -1,24 +1,31 @@
-defmodule Docker.Client do
+defmodule Docker.Client.SslOptions do
+  def call(env, next, ssl_options) do
+    env = %{env | opts: [ssl_options: ssl_options]}
+    Tesla.run(env, next)
+  end
+end
+
+defmodule Docker do
   use Tesla
 
   alias Docker.Spec.Service
 
-  plug Tesla.Middleware.BaseUrl, base_url
   plug Tesla.Middleware.JSON
 
   adapter fn(env) ->
+    [{:ssl_options, ssl_options}] = env.opts
     Tesla.Adapter.Hackney.call(env, [ssl_options: ssl_options])
   end
 
-  def base_url do
-    app_config = Application.get_env(:rotterdam, Docker.Client)
 
-    "https://#{app_config[:host]}:#{app_config[:port]}"
+  def client(host, port, cert_path) do
+    Tesla.build_client [
+      {Docker.Client.SslOptions, build_ssl_options(cert_path)},
+      {Tesla.Middleware.BaseUrl, "https://#{host}:#{port}"}
+    ]
   end
 
-  def ssl_options do
-    cert_path = Application.get_env(:rotterdam, Docker.Client)[:cert_path]
-
+  def build_ssl_options(cert_path) do
     [certfile: cert_path <> "/cert.pem",
      cacertfile: cert_path <> "/ca.pem",
      keyfile: cert_path <> "/key.pem"]
@@ -30,8 +37,8 @@ defmodule Docker.Client do
   def containers, do: get("/containers/json") |> response
   def containers(id), do: get("/containers/#{id}/json") |> response
 
-  def services, do: get("/services") |> response
-  def services(id), do: get("/services/#{id}") |> response
+  def services(client), do: get(client, "/services") |> response
+  def services(client, id), do: get(client, "/services/#{id}") |> response
 
   def create_service(name, image) do
     config = Service.config_struct(name, image)
@@ -43,11 +50,10 @@ defmodule Docker.Client do
   def tasks, do: get("/tasks") |> response
   def tasks(id), do: get("/tasks/#{id}") |> response
 
-
-  def events(stream_to) do
+  def events(host, port, ssl_options, stream_to) do
     # TODO: PR to Tesla. hackney adapter is not handling {:ok, #Reference<pid>}
     #get("/events", opts: [async: true, stream_to: stream_to, recv_timeout: :infinity])
-    HTTPoison.get "#{base_url}/event", %{}, stream_to: stream_to, recv_timeout: :infinity, ssl: ssl_options
+    HTTPoison.get "https://#{host}:#{port}/events", %{}, stream_to: stream_to, recv_timeout: :infinity, ssl: ssl_options
   end
 
   def response(%Tesla.Env{body: body, status: status}) do
