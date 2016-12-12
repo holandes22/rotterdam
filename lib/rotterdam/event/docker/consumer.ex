@@ -4,11 +4,11 @@ defmodule Rotterdam.Event.Docker.Consumer do
   use GenStage
 
   def start_link do
-    GenStage.start_link(__MODULE__, :ok, name: __MODULE__)
+    GenStage.start_link(__MODULE__, :ok)
   end
 
   def init(state) do
-    {:consumer, state, subscribe_to: [Rotterdam.Event.Docker.Producer]}
+    {:consumer, state}
   end
 
   def handle_events(events, _from, state) do

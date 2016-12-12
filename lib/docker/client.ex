@@ -29,6 +29,9 @@ defmodule Docker do
      keyfile: cert_path <> "/key.pem"]
   end
 
+  def nodes(client), do: get(client, "/nodes") |> response
+  def nodes(client, id), do: get(client, "/nodes/#{id}") |> response
+
   def images(client), do: get(client, "/images/json") |> response
   def images(client, id), do: get(client, "/images/#{id}/json") |> response
 

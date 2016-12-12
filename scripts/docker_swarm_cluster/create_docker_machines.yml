@@ -12,6 +12,12 @@
       changed_when: "'Host already exists' not in result.stderr"
       failed_when: "result.rc == 1 and 'Host already exists' not in result.stderr"
 
+    - name: "start docker machines"
+      local_action: command docker-machine start cluster{{ cluster_id }}-node{{ item }}
+      register: result
+      with_sequence: start=1 end={{ number_of_nodes }}
+      failed_when: "result.rc == 1 and 'is already running' not in result.stderr"
+
     - name: "get docker machine names"
       local_action: command docker-machine ls --filter name=cluster{{ cluster_id }}-node --format=\{\{.Name\}\}
       register: machine_names
