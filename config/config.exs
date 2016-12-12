@@ -5,9 +5,16 @@
 # is restricted to this project.
 use Mix.Config
 
+cluster_config = fn ->
+  path = System.get_env("ROTTERDAM_CONFIG_PATH") || "/home/pablo/Desktop/config.exs"
+  [cluster: cluster] = Mix.Config.read!(path)
+  cluster
+end
+
 # General application configuration
 config :rotterdam,
-  ecto_repos: [Rotterdam.Repo]
+  ecto_repos: [Rotterdam.Repo],
+  cluster: cluster_config.()
 
 config :rotterdam, Docker.Client,
   host: System.get_env("ROTTERDAM_DOCKER_HOST"),

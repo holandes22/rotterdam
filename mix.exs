@@ -19,7 +19,7 @@ defmodule Rotterdam.Mixfile do
   def application do
     [mod: {Rotterdam, []},
      applications: [:phoenix, :phoenix_pubsub, :phoenix_html, :cowboy, :logger, :gettext,
-                    :phoenix_ecto, :postgrex, :hackney, :httpoison]]
+                    :phoenix_ecto, :postgrex, :hackney, :gen_stage]]
   end
 
   # Specifies which paths to compile per environment.
@@ -39,10 +39,10 @@ defmodule Rotterdam.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
-      {:tesla, "~> 0.5.2"},
+      {:tesla, path: "/home/pablo/projects/tesla"},
       {:poison, "~> 1.5"},
       {:hackney, "~> 1.6.3"},
-      {:httpoison, "~> 0.10.0"},
+      {:gen_stage, "~> 0.9"}
     ]
   end
 

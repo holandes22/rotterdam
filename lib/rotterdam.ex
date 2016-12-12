@@ -1,31 +1,29 @@
 defmodule Rotterdam do
   use Application
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
   def start(_type, _args) do
     import Supervisor.Spec
 
-    # Define workers and child supervisors to be supervised
+    client = Docker.client("192.168.99.100", "2376", "/home/pablo/.docker/machine/machines/cluster1-node1")
+
     children = [
-      # Start the Ecto repository
       supervisor(Rotterdam.Repo, []),
-      # Start the endpoint when the application starts
       supervisor(Rotterdam.Endpoint, []),
-      # Start your own worker by calling: Rotterdam.Worker.start_link(arg1, arg2, arg3)
-      # worker(Rotterdam.Worker, [arg1, arg2, arg3]),
+      worker(Rotterdam.Event.Docker.Producer, [client, :manager]),
+      worker(Rotterdam.Event.Docker.Consumer, []),
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
     opts = [strategy: :one_for_one, name: Rotterdam.Supervisor]
     Supervisor.start_link(children, opts)
   end
 
-  # Tell Phoenix to update the endpoint configuration
-  # whenever the application is updated.
+  def pipeline_workers do
+    Application.get_env(:rotterdam, :cluster)
+  end
+
   def config_change(changed, _new, removed) do
     Rotterdam.Endpoint.config_change(changed, removed)
     :ok
   end
+
 end
