@@ -1,9 +1,11 @@
-defmodule Docker.Client.SslOptions do
+defmodule Docker.Middleware.SslOptions do
   def call(env, next, ssl_options) do
-    env = %{env | opts: [ssl_options: ssl_options]}
+    opts = Keyword.merge([ssl_options: ssl_options], env.opts)
+    env = %{env | opts: opts}
     Tesla.run(env, next)
   end
 end
+
 
 defmodule Docker do
   use Tesla
@@ -12,15 +14,11 @@ defmodule Docker do
 
   plug Tesla.Middleware.JSON
 
-  adapter fn(env) ->
-    [{:ssl_options, ssl_options}] = env.opts
-    Tesla.Adapter.Hackney.call(env, [ssl_options: ssl_options])
-  end
-
+  adapter :hackney
 
   def client(host, port, cert_path) do
     Tesla.build_client [
-      {Docker.Client.SslOptions, build_ssl_options(cert_path)},
+      {Docker.Middleware.SslOptions, build_ssl_options(cert_path)},
       {Tesla.Middleware.BaseUrl, "https://#{host}:#{port}"}
     ]
   end
@@ -31,29 +29,30 @@ defmodule Docker do
      keyfile: cert_path <> "/key.pem"]
   end
 
-  def images, do: get("/images/json") |> response
-  def images(id), do: get("/images/#{id}/json") |> response
+  def images(client), do: get(client, "/images/json") |> response
+  def images(client, id), do: get(client, "/images/#{id}/json") |> response
 
-  def containers, do: get("/containers/json") |> response
-  def containers(id), do: get("/containers/#{id}/json") |> response
+  def containers(client), do: get(client, "/containers/json") |> response
+  def containers(client, id), do: get(client, "/containers/#{id}/json") |> response
 
   def services(client), do: get(client, "/services") |> response
   def services(client, id), do: get(client, "/services/#{id}") |> response
 
-  def create_service(name, image) do
+  def create_service(client, name, image) do
     config = Service.config_struct(name, image)
-    post("/services/create", config) |> response
+    post(client, "/services/create", config) |> response
   end
 
-  def remove_service(id), do: delete("/services/#{id}")
+  def remove_service(client, id), do: delete(client, "/services/#{id}")
 
-  def tasks, do: get("/tasks") |> response
-  def tasks(id), do: get("/tasks/#{id}") |> response
+  def tasks(client), do: get(client, "/tasks") |> response
+  def tasks(client, id), do: get(client, "/tasks/#{id}") |> response
 
-  def events(host, port, ssl_options, stream_to) do
+  def events(client, stream_to) do
     # TODO: PR to Tesla. hackney adapter is not handling {:ok, #Reference<pid>}
-    #get("/events", opts: [async: true, stream_to: stream_to, recv_timeout: :infinity])
-    HTTPoison.get "https://#{host}:#{port}/events", %{}, stream_to: stream_to, recv_timeout: :infinity, ssl: ssl_options
+    # then switch dep on my fork to Tesla release
+    opts = [async: true, stream_to: stream_to, recv_timeout: :infinity]
+    get(client, "/events", opts: opts) |> response
   end
 
   def response(%Tesla.Env{body: body, status: status}) do
