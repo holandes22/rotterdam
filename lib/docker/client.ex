@@ -17,10 +17,23 @@ defmodule Docker do
   adapter :hackney
 
   def client(host, port, cert_path) do
-    Tesla.build_client [
+    # TODO: make cert_path nil by default. If no cert_path passed
+    # - change the scheme to http
+    # - do not add SslOptions middleware
+    base_url = "https://#{host}:#{port}"
+    client = Tesla.build_client [
       {Docker.Middleware.SslOptions, build_ssl_options(cert_path)},
-      {Tesla.Middleware.BaseUrl, "https://#{host}:#{port}"}
+      {Tesla.Middleware.BaseUrl, base_url}
     ]
+
+    try do
+      get(client, "/version")
+      {:ok, client}
+    rescue
+      error in Tesla.Error ->
+        msg = err_message(error.reason, port, base_url)
+        {:error, "Error connecting to host #{host}. #{msg}"}
+    end
   end
 
   def build_ssl_options(cert_path) do
@@ -58,12 +71,33 @@ defmodule Docker do
     get(client, "/events", opts: opts) |> response
   end
 
-  def response(%Tesla.Env{body: body, status: status}) do
+  defp response(%Tesla.Env{body: body, status: status}) do
     case status do
       _ when status in 200..299 ->
         {:ok, body, status}
       _   ->
         {:error, body, status}
+    end
+  end
+
+  defp err_message(reason, port, base_url) do
+    case reason do
+      :bad_request ->
+        "Bad request using base URL #{base_url}"
+      :ehostunreach ->
+        "Unreachable"
+      :econnrefused ->
+        "Verify API is listening on port #{port}"
+      {:options, {_, path, {:error, :enoent}}} ->
+        "Path #{path} does not exists"
+      {:options, {_, path, {:error, :eacces}}} ->
+        "Cannot read #{path}. Verify file permissions"
+      {:keyfile, {:badmatch, []}} ->
+        "Bad certificate key"
+      {:tls_alert, _} ->
+        "Bad TLS certificate"
+      _ ->
+        "Unknown reason"
     end
   end
 
