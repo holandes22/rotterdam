@@ -9,18 +9,19 @@ defmodule Rotterdam do
     children = [
       supervisor(Rotterdam.Repo, []),
       supervisor(Rotterdam.Endpoint, []),
-      supervisor(Rotterdam.Event.Docker.Supervisor, [])
+      supervisor(Rotterdam.Event.Docker.PipelineSupervisor, []),
+      worker(Rotterdam.Event.Docker.PipelineManager, [])
     ]
 
     opts = [strategy: :one_for_one, name: Rotterdam.Supervisor]
     {:ok, pid} = Supervisor.start_link(children, opts)
 
-    children = Supervisor.which_children(pid)
-    {Rotterdam.Event.Docker.Supervisor, spid, :supervisor, _type} = List.first(children)
-    children = Supervisor.which_children(spid)
-    producers = filter_stages(children, Rotterdam.Event.Docker.Producer)
-    consumers = filter_stages(children, Rotterdam.Event.Docker.Consumer)
-    build_event_pipeline(producers, consumers)
+    # children = Supervisor.which_children(pid)
+    # {Rotterdam.Event.Docker.Supervisor, spid, :supervisor, _type} = List.first(children)
+    # children = Supervisor.which_children(spid)
+    # producers = filter_stages(children, Rotterdam.Event.Docker.Producer)
+    # consumers = filter_stages(children, Rotterdam.Event.Docker.Consumer)
+    # build_event_pipeline(producers, consumers)
     {:ok, pid}
   end
 

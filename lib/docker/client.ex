@@ -12,22 +12,21 @@ defmodule Docker do
 
   alias Docker.Spec.Service
 
-  plug Tesla.Middleware.JSON
-
   adapter :hackney
 
-  def client(host, port, cert_path) do
-    # TODO: make cert_path nil by default. If no cert_path passed
+  def client(host, port, cert_path, opts \\ [connect_timeout: 1_200]) do
+    # TODO: make cert_path nil by default. If no cert_path passed, then:
     # - change the scheme to http
     # - do not add SslOptions middleware
     base_url = "https://#{host}:#{port}"
     client = Tesla.build_client [
       {Docker.Middleware.SslOptions, build_ssl_options(cert_path)},
-      {Tesla.Middleware.BaseUrl, base_url}
+      {Tesla.Middleware.BaseUrl, base_url},
+      {Tesla.Middleware.JSON, []}
     ]
 
     try do
-      get(client, "/version")
+      get(client, "/version", opts: opts)
       {:ok, client}
     rescue
       error in Tesla.Error ->
@@ -88,6 +87,8 @@ defmodule Docker do
         "Unreachable"
       :econnrefused ->
         "Verify API is listening on port #{port}"
+      :connect_timeout ->
+        "Connection timeout"
       {:options, {_, path, {:error, :enoent}}} ->
         "Path #{path} does not exists"
       {:options, {_, path, {:error, :eacces}}} ->

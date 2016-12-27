@@ -4,7 +4,7 @@ defmodule Rotterdam.Event.Docker.Consumer do
   use GenStage
 
   def start_link do
-    GenStage.start_link(__MODULE__, :ok)
+    GenStage.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   def init(state) do
