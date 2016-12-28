@@ -1,7 +1,8 @@
-defmodule Docker.Middleware.SslOptions do
-  def call(env, next, ssl_options) do
-    opts = Keyword.merge([ssl_options: ssl_options], env.opts)
+defmodule Docker.Middleware.AdapterOpts do
+  def call(env, next, opts) do
+    opts = Keyword.merge(opts, env.opts)
     env = %{env | opts: opts}
+    IO.inspect opts
     Tesla.run(env, next)
   end
 end
@@ -14,19 +15,26 @@ defmodule Docker do
 
   adapter :hackney
 
-  def client(host, port, cert_path, opts \\ [connect_timeout: 1_200]) do
-    # TODO: make cert_path nil by default. If no cert_path passed, then:
-    # - change the scheme to http
-    # - do not add SslOptions middleware
-    base_url = "https://#{host}:#{port}"
+  def client(host, port, cert_path \\ nil, opts \\ [connect_timeout: 1500]) do
+    {scheme, opts } = case cert_path do
+      nil ->
+        {"http", opts}
+      _   ->
+        ssl_options = build_ssl_options(cert_path)
+        opts = Keyword.merge([ssl_options: ssl_options], opts)
+        {"https", opts}
+    end
+
+    base_url = "#{scheme}://#{host}:#{port}"
+
     client = Tesla.build_client [
-      {Docker.Middleware.SslOptions, build_ssl_options(cert_path)},
+      {Docker.Middleware.AdapterOpts, opts},
       {Tesla.Middleware.BaseUrl, base_url},
       {Tesla.Middleware.JSON, []}
     ]
 
     try do
-      get(client, "/version", opts: opts)
+      get(client, "/version", opts: [recv_timeout: 2000])
       {:ok, client}
     rescue
       error in Tesla.Error ->
