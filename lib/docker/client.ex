@@ -2,7 +2,6 @@ defmodule Docker.Middleware.AdapterOpts do
   def call(env, next, opts) do
     opts = Keyword.merge(opts, env.opts)
     env = %{env | opts: opts}
-    IO.inspect opts
     Tesla.run(env, next)
   end
 end
