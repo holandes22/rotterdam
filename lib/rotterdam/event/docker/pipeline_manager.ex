@@ -35,31 +35,34 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
 
   def handle_info({:start_node, params}, state) do
     {host, port, cert_path, label} = params
-    new_state = case Docker.client(host, port, cert_path) do
-      {:ok, client} ->
-        start_producer(client, label)
-        Logger.info "Docker producer from host #{host} started"
-        Map.put(state, label, :started)
-      {:error, msg} ->
-        Logger.error msg
-        Map.put(state, label, :failed)
-    end
-    {:noreply, new_state}
+    status = start_node(host, port, cert_path, label)
+
+    {:noreply, Map.put(state, label, status)}
   end
 
   def handle_call(:status, _from, state), do: {:reply, state, state}
 
+  defp start_node(host, port, cert_path, label) do
+    case Docker.client(host, port, cert_path) do
+      {:ok, client} ->
+        start_producer(client, label)
+        Logger.info "Docker producer from host #{host} started"
+        :started
+      {:error, msg} ->
+        Logger.error msg
+        :failed
+    end
+  end
+
   defp start_producer(client, label) do
     consumer_pid = Process.whereis(Consumer)
-    producer_worker = worker(Producer, [client, label], id: "producer_#{Atom.to_string(label)}")
-    response = Supervisor.start_child(PipelineSupervisor, producer_worker)
-    producer_pid = case response do
-      {:ok, pid} ->
-        pid
-      {:error, {:already_started, pid}} ->
-        pid
+    child = worker(Producer, [client, label], id: "producer_#{Atom.to_string(label)}")
+    case Supervisor.start_child(PipelineSupervisor, child) do
+      {:ok, producer_pid} ->
+        GenStage.sync_subscribe(consumer_pid, to: producer_pid)
+      {:error, {:already_started, producer_pid}} ->
+        GenStage.sync_subscribe(consumer_pid, to: producer_pid)
     end
-    GenStage.sync_subscribe(consumer_pid, to: producer_pid)
   end
 
 end
