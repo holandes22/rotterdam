@@ -20,11 +20,7 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
       {"192.168.99.102", "2376", "/home/pablo/.docker/machine/machines/cluster1-node3", :worker2},
     ]
 
-    state = for params <- nodes, into: %{} do
-      {_, _, _, label} = params
-      Process.send_after self(), {:start_node, params}, 500
-      {label, :starting}
-    end
+    state = schedule_work(nodes)
     {:ok, state}
   end
 
@@ -42,15 +38,23 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
 
   def handle_call(:status, _from, state), do: {:reply, state, state}
 
+  defp schedule_work(nodes) do
+    for params <- nodes, into: %{} do
+        {_, _, _, label} = params
+        Process.send_after self(), {:start_nodes, params}, 300
+        {label, :starting}
+    end
+  end
+
   defp start_node(host, port, cert_path, label) do
     case Docker.client(host, port, cert_path) do
       {:ok, client} ->
         start_producer(client, label)
         Logger.info "Docker producer from host #{host} started"
-        :started
+        %{status: :started}
       {:error, msg} ->
         Logger.error msg
-        :failed
+        %{status: :failed, error: msg}
     end
   end
 

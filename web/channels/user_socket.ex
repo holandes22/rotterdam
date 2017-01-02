@@ -2,7 +2,7 @@ defmodule Rotterdam.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  # channel "room:*", Rotterdam.RoomChannel
+  channel "events:*", Rotterdam.EventChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

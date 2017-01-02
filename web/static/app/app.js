@@ -2,6 +2,7 @@ const ElmEvents = require("../../elm/Events.elm");
 const ElmServices = require("../../elm/Services.elm");
 
 import "phoenix_html";
+import socket from "./socket";
 import NavSideMenu from "./components/nav-side-menu";
 
 ElmEvents.Main.embed(document.getElementById("elm-events"));

@@ -29,4 +29,5 @@ defmodule Rotterdam.Event.Docker.Producer do
     events = Enum.slice(events, 0..demand)
     {:noreply, events, {label, events}}
   end
+
 end

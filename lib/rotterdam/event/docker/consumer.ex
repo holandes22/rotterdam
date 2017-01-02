@@ -13,8 +13,7 @@ defmodule Rotterdam.Event.Docker.Consumer do
 
   def handle_events(events, _from, state) do
     for event <- events do
-      IO.inspect event
-      Rotterdam.Endpoint.broadcast! "room:docker", "event", event
+      Rotterdam.Endpoint.broadcast! "events:docker", "event", event
     end
 
     {:noreply, [], state}
