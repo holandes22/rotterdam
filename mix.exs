@@ -41,8 +41,8 @@ defmodule Rotterdam.Mixfile do
       {:cowboy, "~> 1.0"},
       {:tesla, path: "/home/pablo/projects/tesla"},
       {:poison, "~> 1.5"},
-      {:hackney, "~> 1.6.3"},
-      {:gen_stage, "~> 0.9"}
+      {:hackney, "1.6.3"},
+      {:gen_stage, "~> 0.10.0"}
     ]
   end
 

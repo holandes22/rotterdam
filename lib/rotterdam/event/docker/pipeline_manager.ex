@@ -41,7 +41,7 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
   defp schedule_work(nodes) do
     for params <- nodes, into: %{} do
         {_, _, _, label} = params
-        Process.send_after self(), {:start_nodes, params}, 300
+        Process.send_after self(), {:start_node, params}, 300
         {label, :starting}
     end
   end

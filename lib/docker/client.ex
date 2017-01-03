@@ -71,10 +71,34 @@ defmodule Docker do
   def tasks(client, id), do: get(client, "/tasks/#{id}") |> response
 
   def events(client, stream_to) do
-    # TODO: PR to Tesla. hackney adapter is not handling {:ok, #Reference<pid>}
-    # then switch dep on my fork to Tesla release
-    opts = [async: true, stream_to: stream_to, recv_timeout: :infinity]
-    get(client, "/events", opts: opts) |> response
+    # TODO: obtaining opts like this is lame
+    %Tesla.Env{opts: opts, url: url} = get(client, "/")
+    url = url <> "events"
+    # TODO: this is to workaround a weird bug. First connection seems to
+    # always be bad and gets closed. It sends a message of the form
+    # {:ssl, {:sslsocket, {:gen_tcp, #Port<0.7925>, :tls_connection, :undefined}, #PID<0.337.0>, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nServer: Docker/1.12.3 (linux)\r\nDate: Tue, 03 Jan 2017 09:04:42 GMT\r\nTransfer-Encoding: chunked\r\n\r\n"}
+    # That only happens when calling the method from a supervised process.
+    # Calling it, for example, from IEx works fine without the workaround
+    # (1st conn does not gets closed).
+    opts = Keyword.merge(opts, [async: :once, recv_timeout: 0, stream_to: self])
+    {:ok, ref} = :hackney.get(url, [], '', opts)
+    # Spare caller from the workaround messages
+    block_until_timeout(ref)
+
+    opts = Keyword.merge(opts, [async: true, recv_timeout: :infinity, stream_to: stream_to])
+    # TODO: Block for the status and header messages. If there is
+    # an error return an :error tuple, otherwise continue to stream
+    :hackney.get(url, [], '', opts)
+  end
+
+  defp block_until_timeout(ref) do
+    receive do
+      {:hackney_response, ref, {:error, {:closed, :timeout}}} ->
+        :ok
+      _ ->
+        block_until_timeout(ref)
+    end
+
   end
 
   defp response(%Tesla.Env{body: body, status: status}) do
