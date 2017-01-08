@@ -71,16 +71,17 @@ defmodule Docker do
   def tasks(client, id), do: get(client, "/tasks/#{id}") |> response
 
   def events(client, stream_to) do
-    # TODO: obtaining opts like this is lame
-    %Tesla.Env{opts: opts, url: url} = get(client, "/")
+    # TODO: obtaining opts like this is lame, but not sure how else to
+    # obtain them without running the middleware
+    %Tesla.Env{opts: opts, url: url} = get(client, "/", opts: [recv_timeout: 100])
     url = url <> "events"
+    opts = Keyword.merge(opts, [async: :once, recv_timeout: 0, stream_to: self])
     # TODO: this is to workaround a weird bug. First connection seems to
     # always be bad and gets closed. It sends a message of the form
     # {:ssl, {:sslsocket, {:gen_tcp, #Port<0.7925>, :tls_connection, :undefined}, #PID<0.337.0>, "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nServer: Docker/1.12.3 (linux)\r\nDate: Tue, 03 Jan 2017 09:04:42 GMT\r\nTransfer-Encoding: chunked\r\n\r\n"}
     # That only happens when calling the method from a supervised process.
     # Calling it, for example, from IEx works fine without the workaround
     # (1st conn does not gets closed).
-    opts = Keyword.merge(opts, [async: :once, recv_timeout: 0, stream_to: self])
     {:ok, ref} = :hackney.get(url, [], '', opts)
     # Spare caller from the workaround messages
     block_until_timeout(ref)
