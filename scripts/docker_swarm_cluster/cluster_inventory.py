@@ -48,7 +48,7 @@ class DockerMachineInventory(object):
         cluster_id = os.getenv("DM_CLUSTER_ID", "1")
 
         name = "name=cluster{}-node".format(cluster_id)
-        machines = dm("ls", "--filter", name, "--format={{.Name}}").splitlines()
+        machines = dm("ls", "--filter", name, "--filter", "state=running", "--format={{.Name}}").splitlines()
 
         json_data = {
             machine: {

@@ -25,7 +25,7 @@ ansible-playbook create_docker_machines.yml -i create_docker_machines_hosts -e n
 
 echo -e "${YELLOW}CLUSTER IS FORMED BY THE FOLLOWING NODES:"
 echo
-docker-machine ls --filter name=cluster${DM_CLUSTER_ID}-node
+docker-machine ls --filter name=cluster${DM_CLUSTER_ID}-node --filter state=running
 echo -e "${NC}"
 
 echo -e "${CYAN}CREATING DOCKER SWARM CLUSTER${NC}"
