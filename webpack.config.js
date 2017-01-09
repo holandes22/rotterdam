@@ -1,3 +1,4 @@
+var path = require("path");
 var webpack = require("webpack");
 var merge = require("webpack-merge");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
@@ -14,7 +15,10 @@ var common = {
       },
       {
         test: [/\.scss$/, /\.css$/],
-        loader: ExtractTextPlugin.extract({fallbackLoader: "style-loader", loader: "css-loader!sass-loader"})
+        loader: ExtractTextPlugin.extract({
+          fallbackLoader: "style-loader",
+          loader: "css-loader!sass-loader"
+        })
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
@@ -31,7 +35,7 @@ var common = {
           {
             loader: "elm-webpack-loader",
             options: {
-              "cwd": __dirname + "/web/elm"
+              "cwd": path.resolve(__dirname, "web", "elm")
             }
           }
         ]
@@ -63,7 +67,7 @@ module.exports = [
     resolve: {
       modules: [
         "node_modules",
-        __dirname + "/web/static/app"
+        path.resolve(__dirname, "web", "static", "app")
       ]
     },
     plugins: [
