@@ -6,36 +6,43 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 var common = {
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.js$/,
         exclude: [/node_modules/],
-        loader: "babel",
+        use: "babel-loader",
       },
       {
         test: /\.css$/,
-        loader: ExtractTextPlugin.extract("style", "css")
+        loader: ExtractTextPlugin.extract({fallbackLoader: "style-loader", loader:"css-loader"})
       },
       {
         test: /\.scss$/,
-        loader: "style-loader!css-loader!sass-loader"
+        use: [
+          "style-loader",
+          "css-loader",
+          "sass-loader"
+        ]
       },
       {
-        test: /\.png$/,
-        loader: 'file'
+        test: /\.(png|jpg|gif|svg)$/,
+        use: "file-loader?name=/images/[name].[ext]"
       },
       {
-        test: /\.(ttf|eot|svg)(\?[\s\S]+)?$/,
-        loader: "file"
-      },
-      {
-        test: /\.woff2?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url"
+        test: /\.(ttf|eot|svg|woff2?)$/,
+        use: "file-loader?name=/fonts/[name].[ext]",
       },
       {
         test: /\.elm$/,
         exclude: [/elm-stuff/, /node_modules/],
-        loader: "elm-webpack?cwd=" + __dirname + "/web/elm"
+        use: [
+          {
+            loader: "elm-webpack-loader",
+            options: {
+              "cwd": __dirname + "/web/elm"
+            }
+          }
+        ]
       },
     ],
     noParse: [/\.elm$/]
