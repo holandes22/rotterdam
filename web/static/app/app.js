@@ -1,4 +1,4 @@
-const ElmEvents = require("../../elm/Events.elm");
+const ElmEvents = require("../../elm/events/Main.elm");
 const ElmServices = require("../../elm/Services.elm");
 
 import "phoenix_html";
