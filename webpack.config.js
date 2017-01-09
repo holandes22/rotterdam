@@ -13,16 +13,8 @@ var common = {
         use: "babel-loader",
       },
       {
-        test: /\.css$/,
-        loader: ExtractTextPlugin.extract({fallbackLoader: "style-loader", loader:"css-loader"})
-      },
-      {
-        test: /\.scss$/,
-        use: [
-          "style-loader",
-          "css-loader",
-          "sass-loader"
-        ]
+        test: [/\.scss$/, /\.css$/],
+        loader: ExtractTextPlugin.extract({fallbackLoader: "style-loader", loader: "css-loader!sass-loader"})
       },
       {
         test: /\.(png|jpg|gif|svg)$/,
