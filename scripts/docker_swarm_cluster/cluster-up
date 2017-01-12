@@ -7,7 +7,7 @@ YELLOW='\033[0;33m'
 BOLD_GREEN='\033[1;32m'
 NC='\033[0m'
 
-number_of_nodes=3
+number_of_nodes=2
 
 if ! [[ -v DM_CLUSTER_ID ]]; then
     export DM_CLUSTER_ID=1

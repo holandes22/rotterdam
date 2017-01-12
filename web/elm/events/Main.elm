@@ -67,16 +67,25 @@ initPhxSocket =
         |> Phoenix.Socket.on "event" "events:docker" ReceiveEvent
 
 
+joinChannel : String -> Phoenix.Socket.Socket Msg -> ( Phoenix.Socket.Socket Msg, Cmd (Phoenix.Socket.Msg Msg) )
+joinChannel name socket =
+    let
+        channel =
+            Phoenix.Channel.init name
+
+        ( phxSocket, phxCmd ) =
+            Phoenix.Socket.join channel socket
+    in
+        ( phxSocket, phxCmd )
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         JoinChannel ->
             let
-                channel =
-                    Phoenix.Channel.init "events:docker"
-
                 ( phxSocket, phxCmd ) =
-                    Phoenix.Socket.join channel model.phxSocket
+                    joinChannel "events:docker" model.phxSocket
             in
                 ( { model | phxSocket = phxSocket }
                 , Cmd.map PhoenixMsg phxCmd
@@ -108,16 +117,12 @@ update msg model =
 
 viewEvent : DockerEvent -> Html Msg
 viewEvent event =
-    let
-        log =
-            Debug.log "Event" event
-    in
-        ul
-            [ class "event" ]
-            [ li [] [ text (event.nodeLabel) ]
-            , li [] [ text (event.eventType ++ "::" ++ event.action) ]
-            , li [] [ text (toString event.time) ]
-            ]
+    ul
+        [ class "event" ]
+        [ li [] [ text (event.nodeLabel) ]
+        , li [] [ text (event.eventType ++ "::" ++ event.action) ]
+        , li [] [ text (toString event.time) ]
+        ]
 
 
 view : Model -> Html Msg
@@ -146,4 +151,11 @@ subscriptions model =
 
 init : ( Model, Cmd Msg )
 init =
-    ( initialModel, Cmd.none )
+    let
+        socket =
+            initPhxSocket
+
+        ( phxSocket, phxCmd ) =
+            joinChannel "events:docker" socket
+    in
+        ( { events = [], phxSocket = phxSocket }, Cmd.map PhoenixMsg phxCmd )
