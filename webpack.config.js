@@ -43,26 +43,31 @@ var common = {
     ],
     noParse: [/\.elm$/]
   },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {warnings: false},
-      output: {comments: false}
-    })
-  ]
+  // TODO: run this in prod only
+  // plugins: [
+  //   new webpack.optimize.UglifyJsPlugin({
+  //     compress: {warnings: false},
+  //     output: {comments: false}
+  //   })
+  // ]
 };
 
 module.exports = [
   merge(common, {
-    entry: [
-      "normalize.css",
-      "purecss/build/pure.css",
-      "font-awesome-loader",
-      "./web/static/app/app.scss",
-      "./web/static/app/app.js"
-    ],
+    entry: {
+      vendor: [
+        "normalize.css",
+        "purecss/build/pure.css",
+        "font-awesome-loader",
+      ],
+      app: [
+        "./web/static/app/app.scss",
+        "./web/static/app/app.js"
+      ]
+    },
     output: {
       path: "./priv/static",
-      filename: "js/app.js"
+      filename: "js/[name].js"
     },
     resolve: {
       modules: [
@@ -71,8 +76,11 @@ module.exports = [
       ]
     },
     plugins: [
+      new webpack.optimize.CommonsChunkPlugin({
+        name: "vendor"
+      }),
       new CopyWebpackPlugin([{ from: "./web/static/assets" }]),
-      new ExtractTextPlugin("css/app.css")
+      new ExtractTextPlugin("css/[name].css")
     ]
   })
 ];
