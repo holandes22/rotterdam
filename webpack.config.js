@@ -3,6 +3,15 @@ var webpack = require("webpack");
 var merge = require("webpack-merge");
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var StatsWriterPlugin = require("webpack-stats-plugin").StatsWriterPlugin;
+
+
+var ENV = process.env.ENVIRONMENT || "dev";
+var FILENAME = "[name]";
+
+if (ENV === "prod") {
+  FILENAME = "[name].[chunkhash]";
+}
 
 
 var common = {
@@ -52,6 +61,7 @@ var common = {
   // ]
 };
 
+
 module.exports = [
   merge(common, {
     entry: {
@@ -67,7 +77,7 @@ module.exports = [
     },
     output: {
       path: "./priv/static",
-      filename: "js/[name].js"
+      filename: "js/" + FILENAME + ".js"
     },
     resolve: {
       modules: [
@@ -77,10 +87,11 @@ module.exports = [
     },
     plugins: [
       new webpack.optimize.CommonsChunkPlugin({
-        name: "vendor"
+        names: ["vendor", "manifest"]
       }),
       new CopyWebpackPlugin([{ from: "./web/static/assets" }]),
-      new ExtractTextPlugin("css/[name].css")
+      new ExtractTextPlugin("css/" + FILENAME + ".css"),
+      new StatsWriterPlugin()
     ]
   })
 ];
