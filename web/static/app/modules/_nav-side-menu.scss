@@ -9,7 +9,6 @@ $text-color: #e2e2e2;
 $dark-blue-color: #1d2837;
 $selected-color: #ad4636;
 
-
 /*
 Add transition to containers so they can push in and out.
 */
@@ -38,7 +37,6 @@ Add transition to containers so they can push in and out.
   top: 0;
   left: 0;
   bottom: 0;
-  z-index: 1000;
   background: $accent-color;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -58,7 +56,23 @@ Add transition to containers so they can push in and out.
 
   }
 
-  a.pure-menu-heading {
+  .menu-disabled {
+      opacity: .5;
+  }
+
+  a.menu-link, a.menu-heading {
+    display: block;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  a.menu-link {
+    &:hover, &:focus {
+        background-color: $selected-color;
+    }
+  }
+
+  a.menu-heading {
     margin: 0;
     padding: 1em;
     color: rgba(0,0,0,0.4);
@@ -69,13 +83,13 @@ Add transition to containers so they can push in and out.
     cursor: default;
   }
 
-  ul.pure-menu-list {
+  ul.menu-list {
     list-style: none;
     margin: 0;
     padding: 0;
 
     li {
-      .pure-menu-selected {
+      .selected {
         background: $selected-color;
       }
       a {
@@ -90,7 +104,6 @@ Add transition to containers so they can push in and out.
         -webkit-transition: background 0.3s;
         transition: background 0.3s;
 
-
         > i {
           margin-right: 20px;
           font-size: 20px;
@@ -100,9 +113,6 @@ Add transition to containers so they can push in and out.
           }
         }
 
-        &:hover, &:visited {
-          background: $selected-color;
-        }
       }
 
       &:first-child a {
@@ -113,7 +123,7 @@ Add transition to containers so they can push in and out.
 
 }
 
-.menu-link {
+#nav-side-menu a.link {
   position: fixed;
   display: block;
   top: 0;
@@ -143,11 +153,12 @@ Add transition to containers so they can push in and out.
 
   #nav-side-menu {
     left: $menu-width;
+
+    a.link, a.close i {
+      display: none;
+    }
   }
 
-  .menu-link, a.close i {
-    display: none;
-  }
 
 }
 

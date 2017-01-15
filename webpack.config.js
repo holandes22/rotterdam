@@ -57,7 +57,6 @@ module.exports = [
     entry: {
       vendor: [
         "normalize.css",
-        "purecss/build/pure.css",
         "font-awesome-loader",
       ],
       app: [

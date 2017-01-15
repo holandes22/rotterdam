@@ -10,24 +10,23 @@
     "normalize.css": "^5.0.0",
     "phoenix": "file:deps/phoenix",
     "phoenix_html": "file:deps/phoenix_html",
-    "purecss": "^0.6.2",
     "umbrellajs": "^2.6.7"
   },
   "devDependencies": {
     "babel-core": "^6.18.2",
     "babel-loader": "^6.2.8",
-    "babel-preset-env": "^1.1.6",
+    "babel-preset-env": "^1.1.8",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.0",
-    "elm-webpack-loader": "^4.1.1",
+    "elm-webpack-loader": "^4.2.0",
     "extract-text-webpack-plugin": "2.0.0-beta.4",
     "file-loader": "^0.9.0",
     "font-awesome-loader": "^1.0.1",
-    "node-sass": "^4.2.0",
+    "node-sass": "^4.3.0",
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
     "webpack": "2.2.0-rc.3",
-    "webpack-merge": "^2.3.1"
+    "webpack-merge": "^2.4.0"
   }
 }

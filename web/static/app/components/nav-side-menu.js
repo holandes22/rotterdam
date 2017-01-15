@@ -6,7 +6,7 @@ export default class NavSideMenu {
     this.menu = u(this.selector);
     this.layout = u("#layout");
 
-    let menuLink = u(`${this.selector} a.menu-link`);
+    let menuLink = u(`${this.selector} a.link`);
     let closeMenu = u(`${this.selector} a.close`);
 
     menuLink.on("click", evt => {

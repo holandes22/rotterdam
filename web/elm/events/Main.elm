@@ -128,7 +128,7 @@ viewEvent event =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick JoinChannel, class "pure-button" ] [ text "Join events" ]
+        [ button [ onClick JoinChannel ] [ text "Join events" ]
         , div [ class "events" ]
             (List.map viewEvent model.events)
         ]

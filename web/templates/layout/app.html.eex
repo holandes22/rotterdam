@@ -17,39 +17,36 @@
         <!-- Menu toggle -->
 
         <div id="nav-side-menu">
-          <a class="menu-link">
+          <a class="link">
             <i class="fa fa-bars"></i>
           </a>
           <a class="close">
             <i class="fa fa-close"></i>
           </a>
 
-          <div class="pure-menu">
-            <a class="pure-menu-heading" href="#">
+          <div class="menu">
+            <a class="menu-heading" href="#">
               <i class="fa fa-anchor"></i> Rotterdam
             </a>
 
-            <ul class="pure-menu-list">
-              <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link"><i class="fa fa-cubes"></i> Nodes</a>
+            <ul class="menu-list">
+              <li>
+                <a href="#" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
               </li>
-              <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link"><i class="fa fa-arrows"></i> Services</a>
+              <li>
+                <a href="#" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
               </li>
-              <li class="pure-menu-item">
-                <a href="#" class="pure-menu-link pure-menu-selected"> Selected</a>
+              <li>
+                <a href="#" class="menu-link selected"> Selected</a>
               </li>
-              <li class="pure-menu-item pure-menu-disabled">
-                <a href="#" class="pure-menu-link"> Disabled</a>
+              <li class="menu-disabled">
+                <a href="#" class="menu-link"> Disabled</a>
               </li>
             </ul>
           </div>
         </div>
 
         <main role="main">
-          <a class="pure-button" href="#">A Pure Button</a>
-          <button class="pure-button">Another Pure Button</button>
-
           <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
           <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
           <%= render @view_module, @view_template, assigns %>
