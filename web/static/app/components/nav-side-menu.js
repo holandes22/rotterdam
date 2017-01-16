@@ -6,19 +6,19 @@ export default class NavSideMenu {
     this.menu = u(this.selector);
     this.layout = u("#layout");
 
-    let menuLink = u(`${this.selector} a.link`);
-    let closeMenu = u(`${this.selector} a.close`);
+    this.menuLink = u(`${this.selector} a.link`);
+    this.closeMenu = u(`${this.selector} a.close`);
 
-    menuLink.on("click", evt => {
+    this.menuLink.on("click", evt => {
       this.layout.addClass("active");
       this.menu.addClass("active");
-      menuLink.addClass("hidden");
+      this.menuLink.addClass("hidden");
     });
 
-    closeMenu.on("click", evt => {
+    this.closeMenu.on("click", evt => {
       this.layout.removeClass("active");
       this.menu.removeClass("active");
-      menuLink.removeClass("hidden");
+      this.menuLink.removeClass("hidden");
     });
 
 

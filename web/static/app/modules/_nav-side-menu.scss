@@ -1,4 +1,4 @@
-$menu-width-value: 17;
+$menu-width-value: 18;
 $menu-width: #{$menu-width-value}em;
 $mobile-break-point: 50em;
 $menu-link-size: 1em;
@@ -9,25 +9,9 @@ $text-color: #e2e2e2;
 $dark-blue-color: #1d2837;
 $selected-color: #ad4636;
 
-/*
-Add transition to containers so they can push in and out.
-*/
-#layout, #nav-side-menu, .close {
-  -webkit-transition: all 0.2s ease-out;
-  -moz-transition: all 0.2s ease-out;
-  -ms-transition: all 0.2s ease-out;
-  -o-transition: all 0.2s ease-out;
+
+#layout, #nav-side-menu {
   transition: all 0.2s ease-out;
-}
-
-#layout {
-  position: relative;
-  padding-left: 0;
-  .active #nav-side-menu {
-    left: $menu-width;
-    width: $menu-width;
-  }
-
 }
 
 #nav-side-menu {
@@ -39,16 +23,14 @@ Add transition to containers so they can push in and out.
   bottom: 0;
   background: $accent-color;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 
-  a.close {
+  .close {
     display: block;
     position: absolute;
-    top: 0;
-    left: #{$menu-width-value - 2}em;
+    left: #{$menu-width-value - 1.5}em;
     padding: 5px;
     color: rgba(0,0,0,0.4);
-    text-shadow: 0 1px 0 rgba(255,255,255,0.2);
+    text-shadow: 0 2px 0 rgba(255,255,255,0.2);
 
     &:hover {
       color: rgba(0,0,0,0.6);
@@ -56,87 +38,69 @@ Add transition to containers so they can push in and out.
 
   }
 
-  .menu-disabled {
-      opacity: .5;
+  .disabled {
+    opacity: 0.5;
   }
 
-  a.menu-link, a.menu-heading {
+  .selected {
+    background: $selected-color;
+  }
+
+  .menu-link, .menu-heading {
     display: block;
     text-decoration: none;
-    white-space: nowrap;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
   }
 
-  a.menu-link {
-    &:hover, &:focus {
-        background-color: $selected-color;
-    }
-  }
-
-  a.menu-heading {
+  .menu-heading {
     margin: 0;
     padding: 1em;
-    color: rgba(0,0,0,0.4);
-    text-shadow: 0 0 1px rgba(0,0,0,0.1);
+    color: rgba(0,0,0,0.6);
     font-size: 1.8em;
     text-align: center;
     text-transform: uppercase;
     cursor: default;
   }
 
-  ul.menu-list {
+  .menu-list {
     list-style: none;
     margin: 0;
     padding: 0;
+  }
 
-    li {
-      .selected {
-        background: $selected-color;
-      }
-      a {
-        display: block;
-        padding: 1em 1em 1em 1.2em;
-        outline: none;
-        border-bottom: 1px solid rgba(0,0,0,0.2);
-        color: $text-color;
-        text-transform: uppercase;
-        text-shadow: 0 0 1px rgba(255,255,255,0.1);
-        letter-spacing: 1px;
-        -webkit-transition: background 0.3s;
-        transition: background 0.3s;
+  .menu-link {
+    display: block;
+    padding: 1em;
+    color: $text-color;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background 0.3s;
 
-        > i {
-          margin-right: 20px;
-          font-size: 20px;
-
-          &:before {
-            vertical-align: middle;
-          }
-        }
-
-      }
-
-      &:first-child a {
-        border-top: 1px solid rgba(0,0,0,0.2);
-      }
+    &:hover, &:focus {
+      background: $selected-color;
     }
+
+    i {
+      margin-right: 8px;
+      font-size: 20px;
+    }
+
   }
 
 }
 
-#nav-side-menu a.link {
+#nav-side-menu .link {
   position: fixed;
   display: block;
   top: 0;
   left: 0;
   color: white;
-  background: rgba(0,0,0,0.6);
-  width: $menu-link-size;
-  height: $menu-link-size;
-  padding: $menu-link-size $menu-link-size;
+  font-size: 1em;
+  background: rgba(0,0,0,0.5);
+  padding: $menu-link-size;
 
   &:hover, &:focus {
-    color: rgba(255,255,255,0.5);
-    background: rgba(0,0,0,0.7);
+    background: rgba(0,0,0,0.8);
   }
 
 }
@@ -154,15 +118,15 @@ Add transition to containers so they can push in and out.
   #nav-side-menu {
     left: $menu-width;
 
-    a.link, a.close i {
+    .link, .close {
       display: none;
     }
   }
 
-
 }
 
 @media (max-width: $mobile-break-point) {
+
   #layout.active {
     position: relative;
     left: $menu-width;

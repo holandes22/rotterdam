@@ -14,43 +14,43 @@
 
   <body>
     <div id="layout">
-        <!-- Menu toggle -->
 
-        <div id="nav-side-menu">
-          <a class="link">
-            <i class="fa fa-bars"></i>
+      <div id="nav-side-menu">
+        <a class="link">
+          <i class="fa fa-bars"></i>
+        </a>
+        <a class="close">
+          <i class="fa fa-close"></i>
+        </a>
+
+        <div>
+          <a class="menu-heading" href="#">
+            <i class="fa fa-anchor"></i> Rotterdam
           </a>
-          <a class="close">
-            <i class="fa fa-close"></i>
-          </a>
 
-          <div class="menu">
-            <a class="menu-heading" href="#">
-              <i class="fa fa-anchor"></i> Rotterdam
-            </a>
-
-            <ul class="menu-list">
-              <li>
-                <a href="#" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
-              </li>
-              <li>
-                <a href="#" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
-              </li>
-              <li>
-                <a href="#" class="menu-link selected"> Selected</a>
-              </li>
-              <li class="menu-disabled">
-                <a href="#" class="menu-link"> Disabled</a>
-              </li>
-            </ul>
-          </div>
+          <ul class="menu-list">
+            <li>
+              <a href="#" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
+            </li>
+            <li>
+              <a href="#" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
+            </li>
+            <li>
+              <a href="#" class="menu-link selected"> Selected</a>
+            </li>
+            <li>
+              <a href="#" class="menu-link disabled"> Disabled</a>
+            </li>
+          </ul>
         </div>
+      </div>
 
-        <main role="main">
-          <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-          <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-          <%= render @view_module, @view_template, assigns %>
-        </main>
+      <main role="main">
+        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+        <%= render @view_module, @view_template, assigns %>
+      </main>
+
     </div> <!-- Layout -->
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
