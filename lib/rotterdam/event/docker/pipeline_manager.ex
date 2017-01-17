@@ -16,7 +16,7 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
   def init(_params) do
     nodes = [
       {"192.168.99.100", "2376", "/home/pablo/.docker/machine/machines/cluster1-node1", :manager},
-      {"192.168.99.101", "2376", "/home/pablo/.docker/machine/machines/cluster1-node2", :worker1},
+      #{"192.168.99.101", "2376", "/home/pablo/.docker/machine/machines/cluster1-node2", :worker1},
       #{"192.168.99.102", "2376", "/home/pablo/.docker/machine/machines/cluster1-node3", :worker2},
     ]
 
@@ -47,9 +47,9 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
   end
 
   defp start_node(host, port, cert_path, label) do
-    case Docker.client(host, port, cert_path) do
-      {:ok, client} ->
-        start_producer(client, label)
+    case Dox.conn(host, port, cert_path) do
+      {:ok, conn} ->
+        start_producer(conn, label)
         Logger.info "Docker producer from host #{host} started"
         %{status: :started}
       {:error, msg} ->
@@ -58,9 +58,9 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
     end
   end
 
-  defp start_producer(client, label) do
+  defp start_producer(conn, label) do
     consumer_pid = Process.whereis(Consumer)
-    child = worker(Producer, [client, label], id: "producer_#{Atom.to_string(label)}")
+    child = worker(Producer, [conn, label], id: "producer_#{Atom.to_string(label)}")
     case Supervisor.start_child(PipelineSupervisor, child) do
       {:ok, producer_pid} ->
         GenStage.sync_subscribe(consumer_pid, to: producer_pid)

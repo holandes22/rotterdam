@@ -18,15 +18,15 @@ defmodule Rotterdam.Event.Docker.Producer do
 
   use GenStage
 
-  def start_link(client, label) do
-    GenStage.start_link(__MODULE__, {client, label})
+  def start_link(conn, label) do
+    GenStage.start_link(__MODULE__, {conn, label})
   end
 
-  def init({client, label}) when is_atom(label) do
-    init({client, Atom.to_string(label)})
+  def init({conn, label}) when is_atom(label) do
+    init({conn, Atom.to_string(label)})
   end
-  def init({client, label}) do
-    Docker.events(client, self())
+  def init({conn, label}) do
+    Dox.events(conn, self())
     {:producer, {label, []}}
   end
 
