@@ -1,11 +1,11 @@
 defmodule Rotterdam.StateChannel do
   use Rotterdam.Web, :channel
-  alias Rotterdam.Event.Docker.PipelineManager
+  alias Rotterdam.ClusterManager
 
   intercept ["services"]
 
   def join("state:docker", _params, socket) do
-    {:ok, services} = PipelineManager.conn(:manager) |> Dox.services()
+    {:ok, services} = ClusterManager.conn(:manager) |> Dox.services()
     {:ok, services, socket}
   end
 

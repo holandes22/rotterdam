@@ -1,5 +1,6 @@
-defmodule Rotterdam.Event.Docker.PipelineManager do
+defmodule Rotterdam.ClusterManager do
   use GenServer
+
   alias Experimental.GenStage
   alias Rotterdam.Event.Docker.{Producer, Consumer, PipelineSupervisor}
   import Supervisor.Spec, only: [worker: 3]

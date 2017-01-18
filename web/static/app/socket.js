@@ -1,18 +1,24 @@
 import {Socket} from "phoenix";
+import Services from "components/services";
 
 let socket = new Socket("/socket", {});
 
 socket.connect();
 
-let eventsChannel = socket.channel("events:docker", {});
+let stateChannel = socket.channel("state:docker", {});
 
-eventsChannel.on("event", payload => {
-  console.log(payload.RotterdamNodeLabel);
+stateChannel.on("services", payload => {
+  console.log(payload);
 });
 
-eventsChannel
+stateChannel
   .join()
-  .receive("ok", resp => { console.log("Joined successfully to events channel", resp); })
-  .receive("error", resp => { console.log("Unable to join to events channel", resp); });
+  .receive("ok", services => {
+    console.log("Joined successfully to state channel", services);
+    let s = new Services("#services");
+    s.render(services);
+
+  })
+  .receive("error", resp => { console.log("Unable to join to state channel", resp); });
 
 export default socket;
