@@ -1,5 +1,6 @@
 defmodule Rotterdam.Event.Docker.Consumer do
   alias Experimental.GenStage
+  alias Rotterdam.ClusterManager
 
   use GenStage
 
@@ -12,9 +13,12 @@ defmodule Rotterdam.Event.Docker.Consumer do
   end
 
   def handle_events(events, _from, state) do
+
     for event <- events do
       Rotterdam.Endpoint.broadcast! "events:docker", "event", event
     end
+    {:ok, services} = ClusterManager.conn(:manager) |> Dox.services()
+    Rotterdam.Endpoint.broadcast! "state:docker", "services", %{services: services}
 
     {:noreply, [], state}
   end

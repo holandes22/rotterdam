@@ -96,13 +96,11 @@ defmodule Rotterdam.Event.Docker.Producer do
     }
   end
   defp normalize_event(event, node_label) do
-    IO.inspect event
+    IO.inspect event, label: "Unknown event type"
     %Event{
       node_label: node_label,
       type: "unknown",
     }
   end
-
-
 
 end

@@ -10,7 +10,6 @@ defmodule Rotterdam.StateChannel do
   end
 
   def handle_out("services", payload, socket) do
-    IO.inspect payload, label: "services payload"
     push socket, "services", payload
     {:noreply, socket}
   end
