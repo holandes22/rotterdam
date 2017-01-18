@@ -26,6 +26,8 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
 
   def status, do: GenServer.call(__MODULE__, :status)
 
+  def conn(label), do: GenServer.call(__MODULE__, {:conn, label})
+
   # GenServer callbacks
   # -------------------
 
@@ -37,6 +39,11 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
   end
 
   def handle_call(:status, _from, state), do: {:reply, state, state}
+
+  def handle_call({:conn, label}, _from, state) do
+    %{^label => %{conn: conn}} = state
+    {:reply, conn, state}
+  end
 
   defp schedule_work(nodes) do
     for params <- nodes, into: %{} do
@@ -51,7 +58,7 @@ defmodule Rotterdam.Event.Docker.PipelineManager do
       {:ok, conn} ->
         start_producer(conn, label)
         Logger.info "Docker producer from host #{host} started"
-        %{status: :started}
+        %{status: :started, conn: conn}
       {:error, msg} ->
         Logger.error msg
         %{status: :failed, error: msg}

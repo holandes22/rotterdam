@@ -3,6 +3,7 @@ defmodule Rotterdam.UserSocket do
 
   ## Channels
   channel "events:*", Rotterdam.EventChannel
+  channel "state:*", Rotterdam.StateChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

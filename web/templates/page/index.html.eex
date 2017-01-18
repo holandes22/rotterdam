@@ -1,7 +1,5 @@
 <div>
-  <h2><%= gettext "Welcome to %{name}", name: "Phoenix!" %></h2>
-  <p>A productive web framework that<br />does not compromise speed and maintainability.</p>
+  <h2><%= gettext "Welcome to %{name}", name: "Rotterdam!" %></h2>
+  <p>See what is going on in your container cluster in real time!</p>
 </div>
 
-<div id="elm-events"></div>
-<div id="elm-services"></div>
