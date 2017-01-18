@@ -2,7 +2,8 @@ defmodule Rotterdam.ClusterManager do
   use GenServer
 
   alias Experimental.GenStage
-  alias Rotterdam.Event.Docker.{Producer, Consumer, PipelineSupervisor}
+  alias Rotterdam.Event.Docker.PipelineSupervisor
+  alias Rotterdam.Event.Docker.{Producer, ProducerConsumer, Consumer, State}
   import Supervisor.Spec, only: [worker: 3]
   require Logger
 
@@ -68,13 +69,22 @@ defmodule Rotterdam.ClusterManager do
 
   defp start_producer(conn, label) do
     consumer_pid = Process.whereis(Consumer)
+    state_pid = Process.whereis(State)
+    producer_consumer_pid = Process.whereis(ProducerConsumer)
+
     child = worker(Producer, [conn, label], id: "producer_#{Atom.to_string(label)}")
+
     case Supervisor.start_child(PipelineSupervisor, child) do
       {:ok, producer_pid} ->
-        GenStage.sync_subscribe(consumer_pid, to: producer_pid)
+        GenStage.sync_subscribe(producer_consumer_pid, to: producer_pid)
+        GenStage.sync_subscribe(consumer_pid, to: producer_consumer_pid)
+        GenStage.sync_subscribe(state_pid, to: producer_consumer_pid)
       {:error, {:already_started, producer_pid}} ->
-        GenStage.sync_subscribe(consumer_pid, to: producer_pid)
+        GenStage.sync_subscribe(producer_consumer_pid, to: producer_pid)
+        GenStage.sync_subscribe(consumer_pid, to: producer_consumer_pid)
+        GenStage.sync_subscribe(state_pid, to: producer_consumer_pid)
     end
+
   end
 
 end

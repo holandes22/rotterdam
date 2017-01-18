@@ -1,6 +1,6 @@
-defmodule Rotterdam.Event.Docker.Consumer do
+defmodule Rotterdam.Event.Docker.ProducerConsumer do
   alias Experimental.GenStage
-  alias Rotterdam.Endpoint
+  alias Rotterdam.ClusterManager
 
   use GenStage
 
@@ -9,13 +9,11 @@ defmodule Rotterdam.Event.Docker.Consumer do
   end
 
   def init(state) do
-    {:consumer, state}
+    {:producer_consumer, state, dispatcher: GenStage.BroadcastDispatcher}
   end
 
   def handle_events(events, _from, state) do
-    Endpoint.broadcast! "events:docker", "event", hd(events)
-
-    {:noreply, [], state}
+    {:noreply, events, state}
   end
 
 end

@@ -10,7 +10,9 @@ defmodule Rotterdam.Event.Docker.PipelineSupervisor do
   def init(_params) do
 
     children = [
-      worker(Rotterdam.Event.Docker.Consumer, [])
+      worker(Rotterdam.Event.Docker.ProducerConsumer, []),
+      worker(Rotterdam.Event.Docker.Consumer, []),
+      worker(Rotterdam.Event.Docker.State, [])
     ]
 
     supervise(children, strategy: :one_for_one)
