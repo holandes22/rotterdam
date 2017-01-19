@@ -1,4 +1,4 @@
-defmodule Rotterdam.Event.Docker.Consumer do
+defmodule Rotterdam.Event.Docker.EventsBroadcast do
   alias Experimental.GenStage
   alias Rotterdam.Endpoint
 
@@ -12,8 +12,8 @@ defmodule Rotterdam.Event.Docker.Consumer do
     {:consumer, state}
   end
 
-  def handle_events(events, _from, state) do
-    Endpoint.broadcast! "events:docker", "event", hd(events)
+  def handle_events([event | _tail], _from, state) do
+    Endpoint.broadcast! "events:docker", "event", event
 
     {:noreply, [], state}
   end

@@ -1,11 +1,13 @@
 defmodule Rotterdam.ClusterManager do
   use GenServer
 
+  require Logger
+
+  import Supervisor.Spec, only: [worker: 3]
+
   alias Experimental.GenStage
   alias Rotterdam.Event.Docker.PipelineSupervisor
-  alias Rotterdam.Event.Docker.{Producer, ProducerConsumer, Consumer, State}
-  import Supervisor.Spec, only: [worker: 3]
-  require Logger
+  alias Rotterdam.Event.Docker.{Producer, EventsBroadcast, StateBroadcast}
 
 
   # Public API
@@ -29,6 +31,7 @@ defmodule Rotterdam.ClusterManager do
   def status, do: GenServer.call(__MODULE__, :status)
 
   def conn(label), do: GenServer.call(__MODULE__, {:conn, label})
+
 
   # GenServer callbacks
   # -------------------
@@ -58,33 +61,32 @@ defmodule Rotterdam.ClusterManager do
   defp start_node(host, port, cert_path, label) do
     case Dox.conn(host, port, cert_path) do
       {:ok, conn} ->
-        start_producer(conn, label)
+        create_pipeline(conn, label)
         Logger.info "Docker producer from host #{host} started"
         %{status: :started, conn: conn}
       {:error, msg} ->
-        Logger.error msg
+        Logger.error "Failed to start #{host}. #{msg}"
         %{status: :failed, error: msg}
     end
   end
 
-  defp start_producer(conn, label) do
-    consumer_pid = Process.whereis(Consumer)
-    state_pid = Process.whereis(State)
-    producer_consumer_pid = Process.whereis(ProducerConsumer)
-
-    child = worker(Producer, [conn, label], id: "producer_#{Atom.to_string(label)}")
+  defp create_pipeline(conn, label) do
+    id = "producer_" <> Atom.to_string(label)
+    child = worker(Producer, [conn, label], id: id)
 
     case Supervisor.start_child(PipelineSupervisor, child) do
-      {:ok, producer_pid} ->
-        GenStage.sync_subscribe(producer_consumer_pid, to: producer_pid)
-        GenStage.sync_subscribe(consumer_pid, to: producer_consumer_pid)
-        GenStage.sync_subscribe(state_pid, to: producer_consumer_pid)
-      {:error, {:already_started, producer_pid}} ->
-        GenStage.sync_subscribe(producer_consumer_pid, to: producer_pid)
-        GenStage.sync_subscribe(consumer_pid, to: producer_consumer_pid)
-        GenStage.sync_subscribe(state_pid, to: producer_consumer_pid)
+      {:ok, pid} ->
+        create_pipeline(pid)
+      {:error, {:already_started, pid}} ->
+        create_pipeline(pid)
     end
+  end
+  defp create_pipeline(producer) when is_pid(producer) do
+    events_pid = Process.whereis(EventsBroadcast)
+    state_pid = Process.whereis(StateBroadcast)
 
+    GenStage.sync_subscribe(events_pid, to: producer)
+    GenStage.sync_subscribe(state_pid, to: producer)
   end
 
 end

@@ -3,6 +3,7 @@ defmodule Rotterdam.Event.Docker.PipelineSupervisor do
 
   require Logger
 
+
   def start_link do
     Supervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
@@ -10,9 +11,8 @@ defmodule Rotterdam.Event.Docker.PipelineSupervisor do
   def init(_params) do
 
     children = [
-      worker(Rotterdam.Event.Docker.ProducerConsumer, []),
-      worker(Rotterdam.Event.Docker.Consumer, []),
-      worker(Rotterdam.Event.Docker.State, [])
+      worker(Rotterdam.Event.Docker.EventsBroadcast, []),
+      worker(Rotterdam.Event.Docker.StateBroadcast, [])
     ]
 
     supervise(children, strategy: :one_for_one)
