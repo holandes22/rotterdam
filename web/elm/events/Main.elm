@@ -43,8 +43,7 @@ dockerEventDecoder =
 
 
 type Msg
-    = JoinChannel
-    | PhoenixMsg (Phoenix.Socket.Msg Msg)
+    = PhoenixMsg (Phoenix.Socket.Msg Msg)
     | ReceiveEvent JE.Value
 
 
@@ -82,15 +81,6 @@ joinChannel name socket =
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        JoinChannel ->
-            let
-                ( phxSocket, phxCmd ) =
-                    joinChannel "events:docker" model.phxSocket
-            in
-                ( { model | phxSocket = phxSocket }
-                , Cmd.map PhoenixMsg phxCmd
-                )
-
         ReceiveEvent raw ->
             case JD.decodeValue dockerEventDecoder raw of
                 Ok dockerEvent ->
@@ -128,8 +118,7 @@ viewEvent event =
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ onClick JoinChannel ] [ text "Join events" ]
-        , div [ class "events" ]
+        [ div []
             (List.map viewEvent model.events)
         ]
 

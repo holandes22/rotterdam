@@ -14,7 +14,6 @@
 
   <body>
     <div id="layout">
-
       <div id="nav-side-menu">
         <a class="link">
           <i class="fa fa-bars"></i>
@@ -30,30 +29,35 @@
 
           <ul class="menu-list">
             <li>
-              <a href="#" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
+              <a href="#" class="menu-link disabled"><i class="fa fa-cubes"></i> Nodes</a>
             </li>
             <li>
               <!--
               <a href="<%# service_path(@conn, :index) %>" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
               -->
-              <a href="#" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
-            </li>
-            <li>
-              <a href="#" class="menu-link selected"> Selected</a>
-            </li>
-            <li>
-              <a href="#" class="menu-link disabled"> Disabled</a>
+              <a href="#" class="menu-link "><i class="fa fa-arrows"></i> Services</a>
             </li>
           </ul>
         </div>
       </div>
 
       <main role="main">
-        <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-        <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-        <%= render @view_module, @view_template, assigns %>
-        <div id="elm-events"></div>
+        <div class="row">
+            <div class="col-xs-10">
+              <div class="box">
+                <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
+                <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+                <%= render @view_module, @view_template, assigns %>
+              </div>
+            </div>
+            <div class="col-xs-2">
+              <div class="box events">
+                <div id="elm-events"></div>
+              </div>
+            </div>
+        </div>
       </main>
+
 
 
     </div> <!-- Layout -->

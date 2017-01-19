@@ -6,6 +6,7 @@
     "watch": "webpack --watch-stdin --progress --color"
   },
   "dependencies": {
+    "flexboxgrid": "^6.3.1",
     "font-awesome": "^4.7.0",
     "normalize.css": "^5.0.0",
     "phoenix": "file:deps/phoenix",

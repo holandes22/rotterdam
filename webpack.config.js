@@ -62,6 +62,7 @@ module.exports = [
       vendor: [
         "normalize.css",
         "font-awesome-loader",
+        "flexboxgrid/dist/flexboxgrid.css"
       ],
       app: [
         "./web/static/app/app.scss",
