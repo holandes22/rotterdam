@@ -1,6 +1,4 @@
 defmodule Rotterdam.Event.Docker.Producer do
-  alias Experimental.GenStage
-
   use GenStage
 
   import Rotterdam.Normalize, only: [normalize_event: 2]

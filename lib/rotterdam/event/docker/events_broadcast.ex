@@ -1,8 +1,8 @@
 defmodule Rotterdam.Event.Docker.EventsBroadcast do
-  alias Experimental.GenStage
+  use GenStage
+
   alias Rotterdam.Endpoint
 
-  use GenStage
 
   def start_link do
     GenStage.start_link(__MODULE__, :ok, name: __MODULE__)

@@ -5,7 +5,6 @@ defmodule Rotterdam.ClusterManager do
 
   import Supervisor.Spec, only: [worker: 3]
 
-  alias Experimental.GenStage
   alias Rotterdam.Event.Docker.PipelineSupervisor
   alias Rotterdam.Event.Docker.{Producer, EventsBroadcast, StateBroadcast}
 

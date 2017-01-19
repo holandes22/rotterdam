@@ -39,7 +39,7 @@ defmodule Rotterdam.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:hackney, "1.6.3"},
-      {:gen_stage, "~> 0.10.0"},
+      {:gen_stage, "~> 0.11.0"},
       {:maxwell, "~> 2.1"}
     ]
   end

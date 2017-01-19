@@ -81,7 +81,7 @@ defmodule Dox do
     # That only happens when calling the method from a supervised process.
     # Calling it, for example, from IEx works fine without the workaround
     # (1st conn does not get closed).
-    opts = Keyword.merge(opts, [async: :once, recv_timeout: 0, stream_to: self])
+    opts = Keyword.merge(opts, [async: :once, recv_timeout: 0, stream_to: self()])
     {:ok, ref} = :hackney.get(url, [], '', opts)
     # Spare caller from the workaround messages
     block_until_timeout(ref)
@@ -95,14 +95,14 @@ defmodule Dox do
 
   defp block_until_timeout(ref) do
     receive do
-      {:hackney_response, ref, {:error, {:closed, :timeout}}} ->
+      {:hackney_response, _ref, {:error, {:closed, :timeout}}} ->
         :ok
       _ ->
         block_until_timeout(ref)
     end
   end
 
-  defp build_ssl_options(cert_path, host) do
+  defp build_ssl_options(cert_path, _host) do
     [certfile: cert_path <> "/cert.pem",
      cacertfile: cert_path <> "/ca.pem",
      keyfile: cert_path <> "/key.pem",

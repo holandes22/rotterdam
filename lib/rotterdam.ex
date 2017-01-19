@@ -2,8 +2,6 @@ defmodule Rotterdam do
   use Application
   require Logger
 
-  alias Experimental.GenStage
-
   def start(_type, _args) do
     import Supervisor.Spec
     children = [
