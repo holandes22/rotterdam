@@ -14,10 +14,6 @@ var common = {
         use: "babel-loader",
       },
       {
-        test: /.hbs$/,
-        use: "handlebars-loader"
-      },
-      {
         test: [/\.scss$/, /\.css$/],
         loader: ExtractTextPlugin.extract({
           fallbackLoader: "style-loader",
