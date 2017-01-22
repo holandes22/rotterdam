@@ -19,7 +19,7 @@ defmodule Rotterdam.Event.Docker.StateBroadcast do
   end
 
   defp broadcast_services do
-    {:ok, services} = ClusterManager.conn(:manager) |> Dox.services()
+    services = ClusterManager.services()
     Endpoint.broadcast! "state:docker", "services", %{services: services}
   end
 

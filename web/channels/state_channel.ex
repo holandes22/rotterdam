@@ -5,7 +5,7 @@ defmodule Rotterdam.StateChannel do
   intercept ["services"]
 
   def join("state:docker", _params, socket) do
-    {:ok, services} = ClusterManager.conn(:manager) |> Dox.services()
+    services = ClusterManager.services()
     {:ok, services, socket}
   end
 

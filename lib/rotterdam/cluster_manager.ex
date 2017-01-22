@@ -31,6 +31,7 @@ defmodule Rotterdam.ClusterManager do
 
   def conn(label), do: GenServer.call(__MODULE__, {:conn, label})
 
+  def services, do: GenServer.call(__MODULE__, :services)
 
   # GenServer callbacks
   # -------------------
@@ -45,8 +46,18 @@ defmodule Rotterdam.ClusterManager do
   def handle_call(:status, _from, state), do: {:reply, state, state}
 
   def handle_call({:conn, label}, _from, state) do
-    %{^label => %{conn: conn}} = state
+    conn = get_conn(label, state)
     {:reply, conn, state}
+  end
+
+  def handle_call(:services, _from, state) do
+    {:ok, services} = get_conn(:manager, state) |> Dox.services()
+    {:reply, services, state}
+  end
+
+  defp get_conn(label, state) do
+    %{^label => %{conn: conn}} = state
+    conn
   end
 
   defp schedule_work(nodes) do

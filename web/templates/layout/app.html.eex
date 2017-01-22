@@ -23,7 +23,7 @@
         </a>
 
         <div>
-          <a class="menu-heading" href="#">
+          <a class="menu-heading" href="<%= page_path(@conn, :index) %>">
             <i class="fa fa-anchor"></i> Rotterdam
           </a>
 
@@ -32,10 +32,7 @@
               <a href="#" class="menu-link disabled"><i class="fa fa-cubes"></i> Nodes</a>
             </li>
             <li>
-              <!--
-              <a href="<%# service_path(@conn, :index) %>" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
-              -->
-              <a href="#" class="menu-link "><i class="fa fa-arrows"></i> Services</a>
+              <a href="<%= service_path(@conn, :index) %>" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
             </li>
           </ul>
         </div>
