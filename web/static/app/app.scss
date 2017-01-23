@@ -1,6 +1,6 @@
 @import "modules/modules";
 
-$text-color: #e2e2e2;
+$text-color: $light-grey;
 
 .hidden,
 [hidden] {
@@ -12,7 +12,7 @@ body {
   margin: 0;
   height: 100%;
   width: 100%;
-  background-color: #2e3642;
+  background: $background-color;
   font-weight: 300;
   color: $text-color;
 

@@ -1,1 +1,10 @@
-$dark-blue-color: #1d2837;
+$dark-blue: #1d2837;
+$dark-grey: #2e3642;
+$light-grey: #e2e2e2;
+$dark-orange: #e24b31;
+
+@value background-color: $dark-grey;
+
+:export {
+  textColor: $light-grey
+}

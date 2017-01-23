@@ -1,40 +1,55 @@
 import React from "react";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import colors from 'modules/_colors.scss';
+import {textColor} from 'modules/_colors.scss';
 
 
-export default class ServiceList extends React.Component {
-
-  render() {
-    return (
-      <div>
-      <div className="row">
-        <div className="col-xs"><div className="box">Name</div></div>
-        <div className="col-xs"><div className="box">Replicas</div></div>
-        <div className="col-xs"><div className="box">Image</div></div>
-        <div className="col-xs"><div className="box">ID</div></div>
-      </div>
-      {this.getServices().map(service => (
-        <div className="row" key={service.id}>
-          <div className="col-xs"><div className="box">{service.name}</div></div>
-          <div className="col-xs"><div className="box">{service.replicas}</div></div>
-          <div className="col-xs"><div className="box">{service.image}</div></div>
-          <div className="col-xs"><div className="box">{service.id.slice(12)}</div></div>
-        </div>
-      ))}
-    </div>
-    );
+const muiTheme = getMuiTheme({
+  palette: {
+    textColor,
+    canvasColor: colors["background-color"]
   }
+});
 
-  getServices() {
-    let services = [];
+const getServices = (services) => {
+  let retval = [];
 
-    this.props.services.map(service => {
-      let spec = service.Spec;
-      let id = service.ID
-      let name = spec.Name;
-      let replicas = (spec.Mode.Replicated) ? spec.Mode.Replicated.Replicas : "N/A";
-      let image = spec.TaskTemplate.ContainerSpec.Image;
-      services.push({id, name, replicas, image})
-    })
-    return services;
-  }
+  services.map(service => {
+    let spec = service.Spec;
+    let id = service.ID
+    let name = spec.Name;
+    let replicas = (spec.Mode.Replicated) ? spec.Mode.Replicated.Replicas : "N/A";
+    let image = spec.TaskTemplate.ContainerSpec.Image;
+    retval.push({id, name, replicas, image})
+  })
+  return retval;
 }
+
+const ServiceList = (props) => (
+  <MuiThemeProvider muiTheme={muiTheme}>
+    <Table >
+      <TableHeader>
+        <TableRow>
+          <TableHeaderColumn>Name</TableHeaderColumn>
+          <TableHeaderColumn>Replicas</TableHeaderColumn>
+          <TableHeaderColumn>Image</TableHeaderColumn>
+          <TableHeaderColumn>ID</TableHeaderColumn>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {getServices(props.services).map(service => (
+        <TableRow key={service.id}>
+          <TableRowColumn>{service.name}</TableRowColumn>
+          <TableRowColumn>{service.replicas}</TableRowColumn>
+          <TableRowColumn>{service.image}</TableRowColumn>
+          <TableRowColumn>{service.id.slice(12)}</TableRowColumn>
+        </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </MuiThemeProvider>
+);
+
+export default ServiceList;

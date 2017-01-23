@@ -3,7 +3,6 @@ $menu-width: #{$menu-width-value}em;
 $mobile-break-point: 50em;
 $menu-link-size: 1em;
 
-$accent-color: #e24b31;
 $background-color: #2e3642;
 $text-color: #e2e2e2;
 $selected-color: #ad4636;
@@ -20,7 +19,7 @@ $selected-color: #ad4636;
   top: 0;
   left: 0;
   bottom: 0;
-  background: $accent-color;
+  background: $dark-orange;
   overflow-y: auto;
 
   .close {
