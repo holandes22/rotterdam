@@ -5,6 +5,7 @@ defmodule Rotterdam.ClusterManager do
 
   import Supervisor.Spec, only: [worker: 3]
 
+  alias Rotterdam.Service
   alias Rotterdam.Event.Docker.PipelineSupervisor
   alias Rotterdam.Event.Docker.{Producer, EventsBroadcast, StateBroadcast}
 
@@ -52,6 +53,7 @@ defmodule Rotterdam.ClusterManager do
 
   def handle_call(:services, _from, state) do
     {:ok, services} = get_conn(:manager, state) |> Dox.services()
+    services = Service.normalize(services)
     {:reply, services, state}
   end
 

@@ -1,9 +1,9 @@
 import React from "react";
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import colors from 'modules/_colors.scss';
-import {textColor} from 'modules/_colors.scss';
+import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from "material-ui/Table";
+import getMuiTheme from "material-ui/styles/getMuiTheme";
+import colors from "modules/_colors.scss";
+import {textColor} from "modules/_colors.scss";
 
 
 const muiTheme = getMuiTheme({
@@ -13,19 +13,6 @@ const muiTheme = getMuiTheme({
   }
 });
 
-const getServices = (services) => {
-  let retval = [];
-
-  services.map(service => {
-    let spec = service.Spec;
-    let id = service.ID
-    let name = spec.Name;
-    let replicas = (spec.Mode.Replicated) ? spec.Mode.Replicated.Replicas : "N/A";
-    let image = spec.TaskTemplate.ContainerSpec.Image;
-    retval.push({id, name, replicas, image})
-  })
-  return retval;
-}
 
 const ServiceList = (props) => (
   <MuiThemeProvider muiTheme={muiTheme}>
@@ -39,7 +26,7 @@ const ServiceList = (props) => (
         </TableRow>
       </TableHeader>
       <TableBody>
-        {getServices(props.services).map(service => (
+        {props.services.map(service => (
         <TableRow key={service.id}>
           <TableRowColumn>{service.name}</TableRowColumn>
           <TableRowColumn>{service.replicas}</TableRowColumn>

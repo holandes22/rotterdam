@@ -3,7 +3,6 @@ defmodule Rotterdam.Event.Docker.StateBroadcast do
 
   alias Rotterdam.{ClusterManager, Endpoint}
 
-
   def start_link do
     GenStage.start_link(__MODULE__, :ok, name: __MODULE__)
   end

@@ -1,7 +1,7 @@
 defmodule Rotterdam.Event.Docker.Producer do
   use GenStage
 
-  import Rotterdam.Normalize, only: [normalize_event: 2]
+  alias Rotterdam.Event
 
 
   def start_link(conn, label) do
@@ -20,7 +20,7 @@ defmodule Rotterdam.Event.Docker.Producer do
     {label, events} = state
     event = chunk
       |> Poison.decode!()
-      |> normalize_event(label)
+      |> Event.normalize(label)
 
     events = [event] ++ events
     {:noreply, [event], {label, events}}
