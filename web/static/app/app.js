@@ -1,5 +1,4 @@
 import "phoenix_html";
-import "./services";
 import injectTapEventPlugin from "react-tap-event-plugin";
 
 import NavSideMenu from "./components/nav-side-menu";

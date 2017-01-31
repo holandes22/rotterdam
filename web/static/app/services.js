@@ -3,15 +3,17 @@ import React from "react";
 import ReactDOM from "react-dom";
 import ServiceList from "components/service-list.jsx";
 
-let stateChannel = socket.channel("state:docker", {});
+let stateChannel = socket.channel("state:docker", {init: "services"});
 
-let servicesContainer = document.getElementById("services");
 
 let renderServiceList = function(services) {
-  ReactDOM.render(
-    React.createElement(ServiceList, { services }),
-    servicesContainer
-  );
+  let container = document.getElementById("services");
+  if (container) {
+    ReactDOM.render(
+      React.createElement(ServiceList, { services }),
+      container
+    );
+  }
 };
 
 stateChannel.on("services", payload => {
@@ -21,7 +23,7 @@ stateChannel.on("services", payload => {
 stateChannel
   .join()
   .receive("ok", services => {
-    console.log("Joined successfully to state channel", services);
+    window.console.log("Joined successfully to state channel", services);
     renderServiceList(services);
   })
-  .receive("error", resp => { console.log("Unable to join to state channel", resp); });
+  .receive("error", resp => { window.console.log("Unable to join to state channel", resp); });

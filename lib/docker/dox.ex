@@ -21,7 +21,7 @@ defmodule Dox do
         {"https", opts}
     end
 
-    base_url = "#{scheme}://#{host}:#{port}"
+    base_url = "#{scheme}://#{host}:#{port}/v1.24"
 
     conn = base_url
       |> new()

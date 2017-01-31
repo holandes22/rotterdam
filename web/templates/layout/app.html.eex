@@ -29,7 +29,7 @@
 
           <ul class="menu-list">
             <li>
-              <a href="#" class="menu-link disabled"><i class="fa fa-cubes"></i> Nodes</a>
+              <a href="<%= node_path(@conn, :index) %>" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
             </li>
             <li>
               <a href="<%= service_path(@conn, :index) %>" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
@@ -60,5 +60,6 @@
     </div> <!-- Layout -->
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
+    <%= render_existing @view_module, "scripts.html", assigns %>
   </body>
 </html>

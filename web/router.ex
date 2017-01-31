@@ -17,6 +17,7 @@ defmodule Rotterdam.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/nodes", NodeController, :index
     get "/services", ServiceController, :index
   end
 

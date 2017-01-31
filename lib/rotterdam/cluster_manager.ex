@@ -5,7 +5,7 @@ defmodule Rotterdam.ClusterManager do
 
   import Supervisor.Spec, only: [worker: 3]
 
-  alias Rotterdam.Service
+  alias Rotterdam.{Service, Node}
   alias Rotterdam.Event.Docker.PipelineSupervisor
   alias Rotterdam.Event.Docker.{Producer, EventsBroadcast, StateBroadcast}
 
@@ -32,6 +32,8 @@ defmodule Rotterdam.ClusterManager do
 
   def conn(label), do: GenServer.call(__MODULE__, {:conn, label})
 
+  def nodes, do: GenServer.call(__MODULE__, :nodes)
+
   def services, do: GenServer.call(__MODULE__, :services)
 
   # GenServer callbacks
@@ -49,6 +51,12 @@ defmodule Rotterdam.ClusterManager do
   def handle_call({:conn, label}, _from, state) do
     conn = get_conn(label, state)
     {:reply, conn, state}
+  end
+
+  def handle_call(:nodes, _from, state) do
+    {:ok, nodes} = get_conn(:manager, state) |> Dox.nodes()
+    nodes = Node.normalize(nodes)
+    {:reply, nodes, state}
   end
 
   def handle_call(:services, _from, state) do

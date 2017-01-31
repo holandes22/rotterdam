@@ -63,6 +63,12 @@ module.exports = [
       app: [
         "./web/static/app/app.scss",
         "./web/static/app/app.js"
+      ],
+      nodes: [
+        "./web/static/app/nodes.js"
+      ],
+      services: [
+        "./web/static/app/services.js"
       ]
     },
     output: {
