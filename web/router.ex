@@ -19,6 +19,7 @@ defmodule Rotterdam.Router do
     get "/", PageController, :index
     get "/nodes", NodeController, :index
     get "/services", ServiceController, :index
+    get "/containers", ContainerController, :index
   end
 
   # Other scopes may use custom stacks.

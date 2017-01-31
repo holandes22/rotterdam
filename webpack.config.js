@@ -69,6 +69,9 @@ module.exports = [
       ],
       services: [
         "./web/static/app/services.js"
+      ],
+      containers: [
+        "./web/static/app/containers.js"
       ]
     },
     output: {

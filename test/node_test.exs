@@ -66,7 +66,12 @@ defmodule Rotterdam.NodeTest do
     assert node.state == "down"
     assert node.role == "worker"
     refute node.leader
+  end
 
+  test "normalize list of nodes" do
+    [node1, node2] = Node.normalize([@node, @node_with_no_manager_status])
+    assert node1.hostname == "cluster1-node1"
+    assert node2.hostname == "cluster1-node2"
   end
 
 

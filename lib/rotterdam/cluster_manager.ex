@@ -18,13 +18,13 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def init(_params) do
-    nodes = [
+    params = [
       {"192.168.99.100", "2376", "/home/pablo/.docker/machine/machines/cluster1-node1", :manager},
       #{"192.168.99.101", "2376", "/home/pablo/.docker/machine/machines/cluster1-node2", :worker1},
       #{"192.168.99.102", "2376", "/home/pablo/.docker/machine/machines/cluster1-node3", :worker2},
     ]
 
-    state = schedule_work(nodes)
+    state = schedule_work(params)
     {:ok, state}
   end
 
@@ -35,6 +35,8 @@ defmodule Rotterdam.ClusterManager do
   def nodes, do: GenServer.call(__MODULE__, :nodes)
 
   def services, do: GenServer.call(__MODULE__, :services)
+
+  def containers, do: GenServer.call(__MODULE__, :containers)
 
   # GenServer callbacks
   # -------------------
@@ -47,22 +49,35 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def handle_call(:status, _from, state), do: {:reply, state, state}
-
   def handle_call({:conn, label}, _from, state) do
     conn = get_conn(label, state)
     {:reply, conn, state}
   end
-
   def handle_call(:nodes, _from, state) do
     {:ok, nodes} = get_conn(:manager, state) |> Dox.nodes()
     nodes = Node.normalize(nodes)
     {:reply, nodes, state}
   end
-
   def handle_call(:services, _from, state) do
-    {:ok, services} = get_conn(:manager, state) |> Dox.services()
-    services = Service.normalize(services)
+    conn = get_conn(:manager, state)
+    services = conn
+      |> Dox.services()
+      |> ok()
+      |> Service.normalize()
+
     {:reply, services, state}
+  end
+  def handle_call(:containers, _from, state) do
+    {:reply, containers_per_node(state), state}
+  end
+
+  defp ok({:ok, value}), do: value
+
+  defp containers_per_node(state)do
+    for {label, _value} <- state, into: [] do
+      {:ok, containers} = get_conn(label, state) |> Dox.containers()
+      %{node: label, containers: containers}
+    end
   end
 
   defp get_conn(label, state) do
@@ -72,9 +87,9 @@ defmodule Rotterdam.ClusterManager do
 
   defp schedule_work(nodes) do
     for params <- nodes, into: %{} do
-        {_, _, _, label} = params
-        Process.send_after self(), {:start_node, params}, 300
-        {label, :starting}
+      {_, _, _, label} = params
+      Process.send_after self(), {:start_node, params}, 300
+      {label, :starting}
     end
   end
 

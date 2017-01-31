@@ -12,6 +12,10 @@ defmodule Rotterdam.StateChannel do
     nodes = ClusterManager.nodes()
     {:ok, nodes, socket}
   end
+  def join("state:docker", %{"init" => "containers"}, socket) do
+    containers = ClusterManager.containers()
+    {:ok, containers, socket}
+  end
 
   def handle_out("services", payload, socket) do
     push socket, "services", payload
@@ -22,7 +26,7 @@ defmodule Rotterdam.StateChannel do
     {:noreply, socket}
   end
 
-  def terminate({:shutdown, :closed}, socket) do
+  def terminate({:shutdown, :closed}, _socket) do
     IO.puts "Terminating"
   end
 end

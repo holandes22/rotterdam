@@ -5,9 +5,9 @@ import NodeList from "components/node-list.jsx";
 
 let stateChannel = socket.channel("state:docker", {init: "nodes"});
 
+let container = document.getElementById("nodes");
 
 let renderNodeList = function(nodes) {
-  let container = document.getElementById("nodes");
   if (container) {
 
     ReactDOM.render(

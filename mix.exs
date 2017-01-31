@@ -40,7 +40,8 @@ defmodule Rotterdam.Mixfile do
       {:cowboy, "~> 1.0"},
       {:hackney, "1.6.3"},
       {:gen_stage, "~> 0.11.0"},
-      {:maxwell, "~> 2.1"}
+      {:maxwell, "~> 2.1"},
+      {:credo, "~> 0.6", only: [:dev, :test]}
     ]
   end
 

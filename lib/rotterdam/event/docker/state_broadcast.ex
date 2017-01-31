@@ -17,13 +17,24 @@ defmodule Rotterdam.Event.Docker.StateBroadcast do
     {:noreply, [], state}
   end
 
+  defp broadcast_containers do
+    containers = ClusterManager.containers()
+    Endpoint.broadcast! "state:docker", "containers", %{containers: containers}
+  end
+
   defp broadcast_services do
     services = ClusterManager.services()
     Endpoint.broadcast! "state:docker", "services", %{services: services}
   end
 
-  defp broadcast(%{type: :container, action: "start"}), do: broadcast_services()
-  defp broadcast(%{type: :container, action: "stop"}), do: broadcast_services()
+  defp broadcast(%{type: :container, action: "start"}) do
+    broadcast_services()
+    broadcast_containers()
+  end
+  defp broadcast(%{type: :container, action: "stop"}) do
+    broadcast_services()
+    broadcast_containers()
+  end
   defp broadcast(_), do: :ok
 
 end

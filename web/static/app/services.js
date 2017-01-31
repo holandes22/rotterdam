@@ -5,10 +5,11 @@ import ServiceList from "components/service-list.jsx";
 
 let stateChannel = socket.channel("state:docker", {init: "services"});
 
+let container = document.getElementById("services");
 
 let renderServiceList = function(services) {
-  let container = document.getElementById("services");
   if (container) {
+
     ReactDOM.render(
       React.createElement(ServiceList, { services }),
       container

@@ -34,6 +34,9 @@
             <li>
               <a href="<%= service_path(@conn, :index) %>" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
             </li>
+            <li>
+              <a href="<%= container_path(@conn, :index) %>" class="menu-link"><i class="fa fa-square-o"></i> Containers</a>
+            </li>
           </ul>
         </div>
       </div>
