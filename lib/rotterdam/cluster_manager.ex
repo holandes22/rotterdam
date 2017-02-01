@@ -18,56 +18,61 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def init(_params) do
-    params = [
-      {"192.168.99.100", "2376", "/home/pablo/.docker/machine/machines/cluster1-node1", :manager},
-      #{"192.168.99.101", "2376", "/home/pablo/.docker/machine/machines/cluster1-node2", :worker1},
-      #{"192.168.99.102", "2376", "/home/pablo/.docker/machine/machines/cluster1-node3", :worker2},
-    ]
-
-    state = schedule_work(params)
-    {:ok, state}
+    {:ok, %{}}
   end
 
-  def status, do: GenServer.call(__MODULE__, :status)
-
-  def conn(label), do: GenServer.call(__MODULE__, {:conn, label})
+  def cluster_status, do: GenServer.call(__MODULE__, :cluster_status)
 
   def nodes, do: GenServer.call(__MODULE__, :nodes)
 
   def services, do: GenServer.call(__MODULE__, :services)
 
-  def containers, do: GenServer.call(__MODULE__, :containers)
+  def containers_per_node, do: GenServer.call(__MODULE__, :containers_per_node)
+
+  def connect(cluster), do: GenServer.call(__MODULE__, {:connect, cluster})
 
   # GenServer callbacks
   # -------------------
 
-  def handle_info({:start_node, params}, state) do
-    {host, port, cert_path, label} = params
-    status = start_node(host, port, cert_path, label)
-
-    {:noreply, Map.put(state, label, status)}
+  def handle_call(:cluster_status, _from, state) do
+    response = for {cluster, value} <- state, into: %{} do
+      {cluster, value.status}
+    end
+    {:reply, response, state}
   end
 
-  def handle_call(:status, _from, state), do: {:reply, state, state}
-  def handle_call({:conn, label}, _from, state) do
-    conn = get_conn(label, state)
-    {:reply, conn, state}
+  def handle_call({:connect, cluster}, _from, _state) do
+    state = start_nodes(cluster)
+
+    {:reply, state, state}
   end
+
+  def handle_call(:nodes, _from, %{}), do: {:reply, [], %{}}
   def handle_call(:nodes, _from, state) do
-    {:ok, nodes} = get_conn(:manager, state) |> Dox.nodes()
-    nodes = Node.normalize(nodes)
-    {:reply, nodes, state}
+    conn = get_conn(:manager, state)
+    response =
+      conn
+      |> Dox.nodes()
+      |> ok()
+      |> Node.normalize()
+
+    {:reply, response, state}
   end
+
+  def handle_call(:services, _from, %{}), do: {:reply, [], %{}}
   def handle_call(:services, _from, state) do
     conn = get_conn(:manager, state)
-    services = conn
+    response =
+      conn
       |> Dox.services()
       |> ok()
       |> Service.normalize()
 
-    {:reply, services, state}
+    {:reply, response, state}
   end
-  def handle_call(:containers, _from, state) do
+
+  def handle_call(:containers_per_node, _from, %{}), do: {:reply, [], %{}}
+  def handle_call(:containers_per_node, _from, state) do
     {:reply, containers_per_node(state), state}
   end
 
@@ -75,7 +80,11 @@ defmodule Rotterdam.ClusterManager do
 
   defp containers_per_node(state)do
     for {label, _value} <- state, into: [] do
-      {:ok, containers} = get_conn(label, state) |> Dox.containers()
+      conn = get_conn(label, state)
+      containers =
+        conn
+        |> Dox.containers()
+        |> ok()
       %{node: label, containers: containers}
     end
   end
@@ -85,18 +94,27 @@ defmodule Rotterdam.ClusterManager do
     conn
   end
 
-  defp schedule_work(nodes) do
-    for params <- nodes, into: %{} do
-      {_, _, _, label} = params
-      Process.send_after self(), {:start_node, params}, 300
-      {label, :starting}
+  defp get_cluster_params(_cluster) do
+    [
+      {"192.168.99.100", "2376", "/home/pablo/.docker/machine/machines/cluster1-node1", :manager},
+      {"192.168.99.101", "2376", "/home/pablo/.docker/machine/machines/cluster1-node2", :worker1},
+      #{"192.168.99.102", "2376", "/home/pablo/.docker/machine/machines/cluster1-node3", :worker2},
+    ]
+  end
+
+  defp start_nodes(cluster) do
+    params_list = get_cluster_params(cluster)
+    for params <- params_list, into: %{} do
+      {host, port, cert_path, label} = params
+      status = start_node(host, port, cert_path, label)
+      {label, status}
     end
   end
 
   defp start_node(host, port, cert_path, label) do
     case Dox.conn(host, port, cert_path) do
       {:ok, conn} ->
-        create_pipeline(conn, label)
+        create_event_pipeline(conn, label)
         Logger.info "Docker producer from host #{host} started"
         %{status: :started, conn: conn}
       {:error, msg} ->
@@ -105,18 +123,18 @@ defmodule Rotterdam.ClusterManager do
     end
   end
 
-  defp create_pipeline(conn, label) do
+  defp create_event_pipeline(conn, label) do
     id = "producer_" <> Atom.to_string(label)
     child = worker(Producer, [conn, label], id: id)
 
     case Supervisor.start_child(PipelineSupervisor, child) do
       {:ok, pid} ->
-        create_pipeline(pid)
+        start_stages(pid)
       {:error, {:already_started, pid}} ->
-        create_pipeline(pid)
+        start_stages(pid)
     end
   end
-  defp create_pipeline(producer) when is_pid(producer) do
+  defp start_stages(producer) do
     events_pid = Process.whereis(EventsBroadcast)
     state_pid = Process.whereis(StateBroadcast)
 

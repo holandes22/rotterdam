@@ -13,7 +13,7 @@ defmodule Rotterdam.StateChannel do
     {:ok, nodes, socket}
   end
   def join("state:docker", %{"init" => "containers"}, socket) do
-    containers = ClusterManager.containers()
+    containers = ClusterManager.containers_per_node()
     {:ok, containers, socket}
   end
 

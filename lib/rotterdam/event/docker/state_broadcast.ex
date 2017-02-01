@@ -18,7 +18,7 @@ defmodule Rotterdam.Event.Docker.StateBroadcast do
   end
 
   defp broadcast_containers do
-    containers = ClusterManager.containers()
+    containers = ClusterManager.containers_per_node()
     Endpoint.broadcast! "state:docker", "containers", %{containers: containers}
   end
 
