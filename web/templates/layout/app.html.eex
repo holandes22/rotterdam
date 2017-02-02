@@ -29,6 +29,10 @@
 
           <ul class="menu-list">
             <li>
+              <a href="<%= cluster_path(@conn, :index) %>" class="menu-link"><i class="fa fa-server"></i> Clusters</a>
+            </li>
+            <%= if assigns.active_cluster do %>
+            <li>
               <a href="<%= node_path(@conn, :index) %>" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
             </li>
             <li>
@@ -37,6 +41,7 @@
             <li>
               <a href="<%= container_path(@conn, :index) %>" class="menu-link"><i class="fa fa-square-o"></i> Containers</a>
             </li>
+          <% end %>
           </ul>
         </div>
       </div>
@@ -46,7 +51,11 @@
             <div class="col-xs-10">
               <div class="box">
                 <%= assigns.active_cluster %>
-                <div id="loader"></div>
+
+                <div id="loader" class="hidden">
+                  <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
+                  <span class="sr-only">Loading...</span>
+                </div>
                 <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
                 <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
                 <%= render @view_module, @view_template, assigns %>
@@ -59,8 +68,6 @@
             </div>
         </div>
       </main>
-
-
 
     </div> <!-- Layout -->
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>

@@ -10,10 +10,6 @@ defmodule Rotterdam.Router do
     plug Rotterdam.Plug.ActiveCluster
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
-  end
-
   scope "/", Rotterdam do
     pipe_through :browser # Use the default browser stack
 
@@ -21,11 +17,9 @@ defmodule Rotterdam.Router do
     get "/nodes", NodeController, :index
     get "/services", ServiceController, :index
     get "/containers", ContainerController, :index
-    resources "/clusters", ClusterController, only: [:index, :show]
+    get "/clusters/:id/activate", ClusterController, :activate
+    get "/clusters/active/status", ClusterController, :status
+    get "/clusters", ClusterController, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", Rotterdam do
-  #   pipe_through :api
-  # end
 end

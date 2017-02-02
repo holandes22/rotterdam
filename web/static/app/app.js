@@ -24,11 +24,11 @@ new NavSideMenu("#nav-side-menu");
 let channel = socket.channel("state:activity");
 
 channel.on("loading", () => {
-  u("#loader").html("...loading..");
+  u("#loader").removeClass("hidden");
 });
 
 channel.on("settled", () => {
-  u("#loader").html("");
+  u("#loader").addClass("hidden");
 });
 
 channel
