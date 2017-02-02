@@ -18,10 +18,12 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def init(_params) do
-    {:ok, %{}}
+    {:ok, %{active_cluster: nil, nodes: %{}}}
   end
 
   def cluster_status, do: GenServer.call(__MODULE__, :cluster_status)
+
+  def active_cluster, do: GenServer.call(__MODULE__, :active_cluster)
 
   def nodes, do: GenServer.call(__MODULE__, :nodes)
 
@@ -35,19 +37,26 @@ defmodule Rotterdam.ClusterManager do
   # -------------------
 
   def handle_call(:cluster_status, _from, state) do
-    response = for {cluster, value} <- state, into: %{} do
-      {cluster, value.status}
-    end
-    {:reply, response, state}
+    status = cluster_status(state)
+
+    {:reply, status, state}
   end
 
   def handle_call({:connect, cluster}, _from, _state) do
-    state = start_nodes(cluster)
+    nodes = start_nodes(cluster)
+    state = %{active_cluster: cluster, nodes: nodes}
+    status = cluster_status(state)
 
-    {:reply, state, state}
+    {:reply, status, state}
   end
 
-  def handle_call(:nodes, _from, %{}), do: {:reply, [], %{}}
+  def handle_call(:active_cluster, _from, %{active_cluster: cluster} = state) do
+    {:reply, cluster, state}
+  end
+
+  def handle_call(:nodes, _from, %{active_cluster: nil} = state) do
+    {:reply, [], state}
+  end
   def handle_call(:nodes, _from, state) do
     conn = get_conn(:manager, state)
     response =
@@ -59,7 +68,9 @@ defmodule Rotterdam.ClusterManager do
     {:reply, response, state}
   end
 
-  def handle_call(:services, _from, %{}), do: {:reply, [], %{}}
+  def handle_call(:services, _from, %{active_cluster: nil} = state) do
+    {:reply, [], state}
+  end
   def handle_call(:services, _from, state) do
     conn = get_conn(:manager, state)
     response =
@@ -71,7 +82,9 @@ defmodule Rotterdam.ClusterManager do
     {:reply, response, state}
   end
 
-  def handle_call(:containers_per_node, _from, %{}), do: {:reply, [], %{}}
+  def handle_call(:containers_per_node, _from, %{active_cluster: nil} = state) do
+    {:reply, [], state}
+  end
   def handle_call(:containers_per_node, _from, state) do
     {:reply, containers_per_node(state), state}
   end
@@ -79,8 +92,9 @@ defmodule Rotterdam.ClusterManager do
   defp ok({:ok, value}), do: value
 
   defp containers_per_node(state)do
-    for {label, _value} <- state, into: [] do
-      conn = get_conn(label, state)
+    nodes = get_connected_nodes(state)
+
+    for {label, %{conn: conn}} <- nodes, into: [] do
       containers =
         conn
         |> Dox.containers()
@@ -89,8 +103,20 @@ defmodule Rotterdam.ClusterManager do
     end
   end
 
+  defp cluster_status(state) do
+    for {node, value} <- state.nodes, into: %{} do
+      {node, value.status}
+    end
+  end
+
+  defp get_connected_nodes(state) do
+    Enum.filter(state.nodes, fn({_label, value}) ->
+      match?(%{conn: _conn}, value)
+    end)
+  end
+
   defp get_conn(label, state) do
-    %{^label => %{conn: conn}} = state
+    %{nodes: %{^label => %{conn: conn}}} = state
     conn
   end
 
@@ -104,6 +130,7 @@ defmodule Rotterdam.ClusterManager do
 
   defp start_nodes(cluster) do
     params_list = get_cluster_params(cluster)
+
     for params <- params_list, into: %{} do
       {host, port, cert_path, label} = params
       status = start_node(host, port, cert_path, label)

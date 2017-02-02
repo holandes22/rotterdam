@@ -16,6 +16,9 @@ defmodule Rotterdam.StateChannel do
     containers = ClusterManager.containers_per_node()
     {:ok, containers, socket}
   end
+  def join("state:activity", _params, socket) do
+    {:ok, [], socket}
+  end
 
   def handle_out("services", payload, socket) do
     push socket, "services", payload
@@ -23,6 +26,10 @@ defmodule Rotterdam.StateChannel do
   end
   def handle_out("nodes", payload, socket) do
     push socket, "nodes", payload
+    {:noreply, socket}
+  end
+  def handle_out("loading", payload, socket) do
+    push socket, "loading", payload
     {:noreply, socket}
   end
 

@@ -2,6 +2,5 @@
   <h2><%= gettext "Welcome to %{name}", name: "Rotterdam!" %></h2>
   <p>See what is going on in your container cluster in real time!</p>
 </div>
-
-
-
+<div id="cluster-select"></div>
+<script>window.__INITIAL_STATE__ = <%= raw Poison.encode!(@props) %></script>

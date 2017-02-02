@@ -7,6 +7,7 @@ defmodule Rotterdam.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug Rotterdam.Plug.ActiveCluster
   end
 
   pipeline :api do
@@ -20,6 +21,7 @@ defmodule Rotterdam.Router do
     get "/nodes", NodeController, :index
     get "/services", ServiceController, :index
     get "/containers", ContainerController, :index
+    resources "/clusters", ClusterController, only: [:index, :show]
   end
 
   # Other scopes may use custom stacks.

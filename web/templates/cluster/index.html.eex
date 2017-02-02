@@ -1,0 +1,3 @@
+<%= for cluster <- @clusters do %>
+  <a href="<%= cluster_path(@conn, :show, cluster) %>"><%= cluster %></a>
+<% end %>

@@ -45,6 +45,8 @@
         <div class="row">
             <div class="col-xs-10">
               <div class="box">
+                <%= assigns.active_cluster %>
+                <div id="loader"></div>
                 <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
                 <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
                 <%= render @view_module, @view_template, assigns %>
