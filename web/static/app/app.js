@@ -3,27 +3,25 @@ import socket from "./socket";
 import injectTapEventPlugin from "react-tap-event-plugin";
 import { u } from "umbrellajs";
 
-import polymerHtml from "polymer/polymer.html";
-import paperInputHtml from "paper-input/paper-input.html";
-import paperButtonHtml from "paper-button/paper-button.html";
 // import React from "react";
 // import ReactDOM from "react-dom";
 // import TestSSR from "./components/test-ssr.jsx";
 import NavSideMenu from "./components/nav-side-menu";
 import ElmEvents from "../../elm/events/Main.elm";
 
-[polymerHtml, paperInputHtml, paperButtonHtml].map(ref => {
-  window.console.log(ref);
-  let importEl = document.createElement("link");
-  importEl.rel = "import";
-  importEl.href = ref;
+require("vulcanize-loader?es6=false&base=./!./imports.html");
 
-  document.body.appendChild(importEl);
-});
+window.Polymer = {
+  dom: "shadow",
+  lazyRegister: true,
+  useNativeCSSProperties: true,
+};
 
 injectTapEventPlugin();
 
-ElmEvents.Main.embed(document.getElementById("elm-events"), { user: 3 });
+window.addEventListener("WebComponentsReady", () => {
+  ElmEvents.Main.embed(document.getElementById("elm-events"), { user: 3 });
+});
 
 new NavSideMenu("#nav-side-menu");
 
