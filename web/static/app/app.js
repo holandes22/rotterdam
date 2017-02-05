@@ -12,7 +12,7 @@ import ElmEvents from "../../elm/events/Main.elm";
 
 injectTapEventPlugin();
 
-ElmEvents.Main.embed(document.getElementById("elm-events"));
+ElmEvents.Main.embed(document.getElementById("elm-events"), { user: 3 });
 
 new NavSideMenu("#nav-side-menu");
 

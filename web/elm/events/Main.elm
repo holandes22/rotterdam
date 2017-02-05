@@ -123,9 +123,14 @@ view model =
         ]
 
 
-main : Program Never Model Msg
+type alias Flags =
+    { user : Int
+    }
+
+
+main : Program Flags Model Msg
 main =
-    Html.program
+    Html.programWithFlags
         { init = init
         , update = update
         , view = view
@@ -138,13 +143,16 @@ subscriptions model =
     Phoenix.Socket.listen model.phxSocket PhoenixMsg
 
 
-init : ( Model, Cmd Msg )
-init =
+init : Flags -> ( Model, Cmd Msg )
+init flags =
     let
         socket =
             initPhxSocket
 
         ( phxSocket, phxCmd ) =
             joinChannel "events:docker" socket
+
+        a =
+            Debug.log "flags" flags
     in
         ( { events = [], phxSocket = phxSocket }, Cmd.map PhoenixMsg phxCmd )

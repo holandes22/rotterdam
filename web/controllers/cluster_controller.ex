@@ -3,11 +3,14 @@ defmodule Rotterdam.ClusterController do
 
   alias Rotterdam.{Endpoint, ClusterManager, Plug}
 
-  #plug Plug.ActiveCluster
-
 
   def index(conn, _params) do
-    clusters = ["c1", "c2"]
+    clusters = %{
+      swarm: [
+        {"c1", true},
+        {"c2", false},
+      ]
+    }
 
     render conn, "index.html", clusters: clusters
   end
