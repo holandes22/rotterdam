@@ -49,6 +49,7 @@ var common = {
   //     compress: {warnings: false},
   //     output: {comments: false}
   //   })
+  //   })
   // ]
 };
 

@@ -9,7 +9,7 @@ import { u } from "umbrellajs";
 import NavSideMenu from "./components/nav-side-menu";
 import ElmEvents from "../../elm/events/Main.elm";
 
-require("vulcanize-loader?es6=false&base=./!./imports.html");
+require("vulcanize-loader?es6=false&base=./&watchFiles=./theme.html!./imports.html");
 
 window.Polymer = {
   dom: "shadow",
