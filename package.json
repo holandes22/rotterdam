@@ -15,13 +15,15 @@
     "react": "^15.4.2",
     "react-dom": "^15.4.2",
     "react-tap-event-plugin": "^2.0.1",
-    "umbrellajs": "^2.6.7"
+    "umbrellajs": "^2.6.7",
+    "webcomponents.js": "^0.7.23"
   },
   "devDependencies": {
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.8",
     "babel-preset-env": "^1.1.8",
     "babel-preset-react": "^6.22.0",
+    "bower": "^1.8.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.26.0",
     "elm-webpack-loader": "^4.2.0",
@@ -34,6 +36,7 @@
     "sass-loader": "^4.0.2",
     "style-loader": "^0.13.1",
     "url-loader": "^0.5.7",
+    "web-components-loader": "^0.1.2",
     "webpack": "2.2.0",
     "webpack-merge": "^2.6.1"
   }

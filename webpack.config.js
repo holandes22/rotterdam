@@ -9,6 +9,10 @@ var common = {
   module: {
     rules: [
       {
+        test: /bower_components\/.*.html/,
+        use: "web-components-loader"
+      },
+      {
         test: [/\.js$/, /\.jsx$/],
         exclude: [/node_modules/],
         use: "babel-loader",
@@ -58,7 +62,8 @@ module.exports = [
       vendor: [
         "normalize.css",
         "font-awesome-loader",
-        "flexboxgrid/dist/flexboxgrid.css"
+        "flexboxgrid/dist/flexboxgrid.css",
+        "webcomponents.js/webcomponents.js",
       ],
       app: [
         "./web/static/app/app.scss",
@@ -76,11 +81,13 @@ module.exports = [
     },
     output: {
       path: "./priv/static",
+      publicPath: "",
       filename: "js/[name].js"
     },
     resolve: {
       modules: [
         "node_modules",
+        "bower_components",
         path.resolve(__dirname, "web", "static", "app")
       ]
     },

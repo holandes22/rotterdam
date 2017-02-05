@@ -1,7 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
-import Html.Attributes exposing (value, placeholder, class)
+import Html.Attributes exposing (value, placeholder, class, attribute)
 import Html.Events exposing (onInput, onClick)
 import Phoenix.Socket
 import Phoenix.Channel
@@ -120,6 +120,20 @@ view model =
     div []
         [ div []
             (List.map viewEvent model.events)
+        , div
+            []
+            [ text "Hellow"
+            , node "paper-input"
+                [ attribute "label" "Username" ]
+                []
+              -- add this
+            , div
+                []
+                [ node "paper-button"
+                    []
+                    [ text "Clicky" ]
+                ]
+            ]
         ]
 
 
