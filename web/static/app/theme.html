@@ -19,7 +19,8 @@ From https://github.com/knewter/elm_web_components_playground/blob/master/elm/sr
     --dark-primary-text-color: #ffffff;
     --light-primary-color: #c5cae9;
     --accent-color: #ff4081;
-    --primary-background-color: #ffffff;
+    --accent-color: #2e3642;
+    --primary-background-color: #2e3642;
     --primary-text-color: #444444;
     --secondary-text-color: #444444;
     --disabled-text-color: #313238;
@@ -82,7 +83,20 @@ From https://github.com/knewter/elm_web_components_playground/blob/master/elm/sr
       font-weight: 600;
       text-transform: uppercase;
     }
+
+    vaadin-grid {
+      --primary-color: #e24b31;
+      --vaadin-grid-row-height: 36px;
+      --vaadin-grid-header-row-height: 44px;
+      --vaadin-grid-footer-row-height: 44px;
+      --vaadin-grid-row-cell: {
+        color: #e2e2e2;
+        background: #2e3642;
+      }
+    }
+
   }
+
 
   paper-button {
     background: var(--accent-color);

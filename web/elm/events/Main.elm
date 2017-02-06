@@ -120,20 +120,20 @@ view model =
     div []
         [ div []
             (List.map viewEvent model.events)
-        , div
-            []
-            [ text "Hellow"
-            , node "paper-input"
-                [ attribute "label" "Username" ]
-                []
-              -- add this
-            , div
-                []
-                [ node "paper-button"
-                    []
-                    [ text "Clicky" ]
-                ]
-            ]
+          -- , div
+          --     []
+          --     [ text "Hellow"
+          --     , node "paper-input"
+          --         [ attribute "label" "Username" ]
+          --         []
+          --       -- add this
+          --     , div
+          --         []
+          --         [ node "paper-button"
+          --             []
+          --             [ text "Clicky" ]
+          --         ]
+          --     ]
         ]
 
 

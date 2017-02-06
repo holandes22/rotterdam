@@ -128,17 +128,39 @@ update msg model =
 
 viewService : Service -> Html Msg
 viewService service =
-    ul
-        [ class "service" ]
-        [ li [] [ text (service.name) ]
+    tr []
+        [ td [] [ text service.name ]
+        , td [] [ text (toString service.replicas) ]
+        , td [] [ text service.image ]
+        , td [] [ text service.id ]
         ]
+
+
+
+-- ul
+--     [ class "service" ]
+--     [ li [] [ text (service.name) ]
+--     ]
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ div []
-            (List.map viewService model.services)
+        [ node "vaadin-grid"
+            []
+            [ table []
+                [ colgroup [] [ col [] [], col [] [], col [] [] ]
+                , thead []
+                    [ tr []
+                        [ th [] [ text "Name" ]
+                        , th [] [ text "Replicas" ]
+                        , th [] [ text "Image" ]
+                        , th [] [ text "ID" ]
+                        ]
+                    ]
+                , tbody [] (List.map viewService model.services)
+                ]
+            ]
         ]
 
 
