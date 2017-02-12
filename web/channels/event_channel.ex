@@ -4,7 +4,8 @@ defmodule Rotterdam.EventChannel do
   intercept ["event"]
 
   def join("events:docker", _params, socket) do
-    {:ok, socket}
+    # TODO: take latest events from Producer state
+    {:ok, [], socket}
   end
 
   def handle_in("event", payload, socket) do
