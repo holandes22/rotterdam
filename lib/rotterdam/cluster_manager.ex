@@ -28,6 +28,7 @@ defmodule Rotterdam.ClusterManager do
   def nodes, do: GenServer.call(__MODULE__, :nodes)
 
   def services, do: GenServer.call(__MODULE__, :services)
+  def services(id), do: GenServer.call(__MODULE__, {:services, id})
 
   def containers_per_node, do: GenServer.call(__MODULE__, :containers_per_node)
 
@@ -69,6 +70,7 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def handle_call(:services, _from, %{active_cluster: nil} = state) do
+    # TODO: return error if called when cluster is not active
     {:reply, [], state}
   end
   def handle_call(:services, _from, state) do
@@ -76,6 +78,16 @@ defmodule Rotterdam.ClusterManager do
     response =
       conn
       |> Dox.services()
+      |> ok()
+      |> Service.normalize()
+
+    {:reply, response, state}
+  end
+  def handle_call({:services, id}, _from, state) do
+    conn = get_conn(:manager, state)
+    response =
+      conn
+      |> Dox.services(id)
       |> ok()
       |> Service.normalize()
 

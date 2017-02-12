@@ -38,5 +38,7 @@ defmodule Rotterdam.Endpoint do
     key: "_rotterdam_key",
     signing_salt: "APFJp95K"
 
+  plug CORSPlug
+
   plug Rotterdam.Router
 end

@@ -41,6 +41,7 @@ defmodule Rotterdam.Mixfile do
       {:hackney, "1.6.3"},
       {:gen_stage, "~> 0.11.0"},
       {:maxwell, "~> 2.1"},
+      {:cors_plug, "~> 1.2"},
       {:credo, "~> 0.6", only: [:dev, :test]}
     ]
   end

@@ -10,8 +10,12 @@ defmodule Rotterdam.Router do
     plug Rotterdam.Plug.ActiveCluster
   end
 
+  pipeline :api do
+    plug :accepts, ["json"]
+  end
+
   scope "/", Rotterdam do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
     get "/nodes", NodeController, :index
@@ -20,6 +24,16 @@ defmodule Rotterdam.Router do
     get "/clusters/:id/activate", ClusterController, :activate
     get "/clusters/active/status", ClusterController, :status
     get "/clusters", ClusterController, :index
+  end
+
+
+  scope "/api", Rotterdam do
+    pipe_through :api
+
+    get "/managed-clusters", ManagedClusterController, :index
+    post "/managed-clusters/:id/activate", ManagedClusterController, :activate
+    get "/services/:id", ServiceController, :show
+
   end
 
 end
