@@ -1,6 +1,5 @@
 $menu-width-value: 18;
 $menu-width: #{$menu-width-value}em;
-$mobile-break-point: 50em;
 $menu-link-size: 1em;
 
 $background-color: #2e3642;
@@ -12,6 +11,12 @@ $selected-color: #ad4636;
   transition: all 0.2s ease-out;
 }
 
+#layout.active {
+  position: relative;
+  margin-left: $menu-width;
+}
+
+
 #nav-side-menu {
   margin-left: -$menu-width;
   width: $menu-width;
@@ -21,6 +26,31 @@ $selected-color: #ad4636;
   bottom: 0;
   background: $dark-orange;
   overflow-y: auto;
+
+  &.active {
+    left: $menu-width;
+
+    .link  {
+      display: none;
+    }
+
+  }
+
+  .link {
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    color: white;
+    font-size: 1em;
+    background: rgba(0,0,0,0.5);
+    padding: $menu-link-size;
+
+    &:hover, &:focus {
+      background: rgba(0,0,0,0.8);
+    }
+
+  }
 
   .close {
     display: block;
@@ -40,6 +70,7 @@ $selected-color: #ad4636;
     display: block;
     text-decoration: none;
     border-bottom: 1px solid rgba(0,0,0,0.2);
+    cursor: pointer;
   }
 
   .menu-heading {
@@ -84,54 +115,6 @@ $selected-color: #ad4636;
       font-size: 20px;
     }
 
-  }
-
-}
-
-#nav-side-menu .link {
-  position: fixed;
-  display: block;
-  top: 0;
-  left: 0;
-  color: white;
-  font-size: 1em;
-  background: rgba(0,0,0,0.5);
-  padding: $menu-link-size;
-
-  &:hover, &:focus {
-    background: rgba(0,0,0,0.8);
-  }
-
-}
-
-
-/* -- Responsive Styles (Media Queries) ------------------------------------- */
-
-@media (min-width: $mobile-break-point) {
-
-  #layout {
-    padding-left: $menu-width;
-    left: 0;
-  }
-
-  #nav-side-menu {
-    left: $menu-width;
-
-    .link, .close {
-      display: none;
-    }
-  }
-
-}
-
-@media (max-width: $mobile-break-point) {
-
-  #layout.active {
-    position: relative;
-    left: $menu-width;
-  }
-  #nav-side-menu.active {
-    left: $menu-width;
   }
 
 }

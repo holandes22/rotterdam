@@ -1,29 +1,50 @@
 defmodule Rotterdam.ClusterController do
   use Rotterdam.Web, :controller
 
-  alias Rotterdam.{Endpoint, ClusterManager, Plug}
-
+  alias Rotterdam.ClusterManager
 
   def index(conn, _params) do
-    clusters = %{
-      swarm: [
-        {"c1", true},
-        {"c2", false},
-      ]
-    }
+    clusters = [
+        %{
+          id: "c1",
+          label: "c1",
+          active: true,
+          nodes: [
+            %{
+              label: "n1",
+              status: :started
+            },
+            %{
+              label: "n2",
+              status: :failed
+            }
 
-    render conn, "index.html", clusters: clusters
+          ]
+        },
+        %{
+          id: "c2",
+          label: "c2",
+          active: false,
+          nodes: [
+            %{
+              label: "n1",
+              status: :stopped
+            },
+            %{
+              label: "n2",
+              status: :stopped
+            }
+
+          ]
+        },
+      ]
+
+    render conn, "index.json", clusters: clusters
   end
 
   def activate(conn, %{"id" => id}) do
-    Endpoint.broadcast! "state:activity", "loading", %{}
-    ClusterManager.connect(id)
-    redirect conn, to: cluster_path(conn, :status)
-  end
-
-  def status(conn, _params) do
-    cluster_status = ClusterManager.cluster_status()
-    render conn, "status.html", cluster_status: cluster_status
+    cluster_status = ClusterManager.connect(id)
+    render conn, "status.json", cluster_status: cluster_status
   end
 
 end

@@ -1,4 +1,0 @@
-<%= for {node_label, status} <- @cluster_status do %>
-  <div><%= node_label %></div>
-  <div><%= status %></div>
-<% end %>

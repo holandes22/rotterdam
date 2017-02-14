@@ -9,7 +9,7 @@ var common = {
   module: {
     rules: [
       {
-        test: [/\.js$/, /\.jsx$/],
+        test: /\.js$/,
         exclude: [/node_modules/],
         use: "babel-loader",
       },
@@ -35,7 +35,8 @@ var common = {
           {
             loader: "elm-webpack-loader",
             options: {
-              "cwd": path.resolve(__dirname, "web", "elm")
+              "cwd": path.resolve(__dirname, "web", "elm"),
+              "debug": true
             }
           }
         ]
@@ -65,15 +66,6 @@ module.exports = [
       app: [
         "./web/static/app/app.scss",
         "./web/static/app/app.js"
-      ],
-      nodes: [
-        "./web/static/app/nodes.js"
-      ],
-      services: [
-        "./web/static/app/services.js"
-      ],
-      containers: [
-        "./web/static/app/containers.js"
       ]
     },
     output: {

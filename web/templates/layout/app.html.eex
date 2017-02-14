@@ -13,65 +13,8 @@
   </head>
 
   <body>
-    <div id="layout">
-      <div id="nav-side-menu">
-        <a class="link">
-          <i class="fa fa-bars"></i>
-        </a>
-        <a class="close">
-          <i class="fa fa-close"></i>
-        </a>
-
-        <div>
-          <a class="menu-heading" href="<%= page_path(@conn, :index) %>">
-            <i class="fa fa-anchor"></i> Rotterdam
-          </a>
-
-          <ul class="menu-list">
-            <li>
-              <a href="<%= cluster_path(@conn, :index) %>" class="menu-link"><i class="fa fa-server"></i> Clusters</a>
-            </li>
-            <%= if assigns.active_cluster do %>
-            <li>
-              <a href="<%= node_path(@conn, :index) %>" class="menu-link"><i class="fa fa-cubes"></i> Nodes</a>
-            </li>
-            <li>
-              <a href="<%= service_path(@conn, :index) %>" class="menu-link"><i class="fa fa-arrows"></i> Services</a>
-            </li>
-            <li>
-              <a href="<%= container_path(@conn, :index) %>" class="menu-link"><i class="fa fa-square-o"></i> Containers</a>
-            </li>
-          <% end %>
-          </ul>
-        </div>
-      </div>
-
-      <main role="main">
-        <div class="row">
-            <div class="col-xs-10">
-              <div class="box">
-                <%= assigns.active_cluster %>
-
-                <div id="loader" class="hidden">
-                  <i class="fa fa-cog fa-spin fa-3x fa-fw"></i>
-                  <span class="sr-only">Loading...</span>
-                </div>
-                <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-                <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
-                <%= render @view_module, @view_template, assigns %>
-              </div>
-            </div>
-            <div class="col-xs-2">
-              <div class="box events">
-                <div id="elm-events"></div>
-              </div>
-            </div>
-        </div>
-      </main>
-
-    </div> <!-- Layout -->
+    <script>window.__ROTTERDAM__ = <%= raw Poison.encode!(@props) %></script>
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
-    <%= render_existing @view_module, "scripts.html", assigns %>
   </body>
 </html>

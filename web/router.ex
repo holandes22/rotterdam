@@ -18,20 +18,13 @@ defmodule Rotterdam.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/nodes", NodeController, :index
-    get "/services", ServiceController, :index
-    get "/containers", ContainerController, :index
-    get "/clusters/:id/activate", ClusterController, :activate
-    get "/clusters/active/status", ClusterController, :status
-    get "/clusters", ClusterController, :index
   end
-
 
   scope "/api", Rotterdam do
     pipe_through :api
 
-    get "/managed-clusters", ManagedClusterController, :index
-    post "/managed-clusters/:id/activate", ManagedClusterController, :activate
+    get "/clusters", ClusterController, :index
+    post "/clusters/:id/activate", ClusterController, :activate
     get "/services/:id", ServiceController, :show
 
   end

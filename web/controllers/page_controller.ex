@@ -4,7 +4,7 @@ defmodule Rotterdam.PageController do
   def index(conn, _params) do
     props = %{
       clusters: [
-        %{id: 1, label: "Cluster1"},
+        %{id: 1, label: "ClusterA"},
         %{id: 2, label: "Cluster2"},
       ]
     }
