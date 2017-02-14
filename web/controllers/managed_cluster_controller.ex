@@ -4,12 +4,40 @@ defmodule Rotterdam.ManagedClusterController do
   alias Rotterdam.ClusterManager
 
   def index(conn, _params) do
-    clusters = %{
-      swarm: [
-        %{label: "c1", active: true},
-        %{label: "c2", active: false},
+    clusters = [
+        %{
+          id: "c1",
+          label: "c1",
+          active: true,
+          nodes: [
+            %{
+              label: "n1",
+              status: :started
+            },
+            %{
+              label: "n2",
+              status: :failed
+            }
+
+          ]
+        },
+        %{
+          id: "c2",
+          label: "c2",
+          active: false,
+          nodes: [
+            %{
+              label: "n1",
+              status: :stopped
+            },
+            %{
+              label: "n2",
+              status: :stopped
+            }
+
+          ]
+        },
       ]
-    }
 
     render conn, "index.json", clusters: clusters
   end

@@ -116,8 +116,16 @@ defmodule Rotterdam.ClusterManager do
   end
 
   defp cluster_status(state) do
-    for {node, value} <- state.nodes, into: %{} do
-      {node, value.status}
+    %{
+      id: state.active_cluster,
+      label: state.active_cluster,
+      nodes: nodes_status(state.nodes)
+    }
+  end
+
+  defp nodes_status(nodes) do
+    for {node, value} <- nodes do
+      %{label: node, status: value.status}
     end
   end
 
