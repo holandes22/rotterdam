@@ -11,9 +11,9 @@ import Phoenix.Channel
 import Routing
 
 
-main : Program Never Model Msg
+main : Program Flags Model Msg
 main =
-    Navigation.program UrlChange
+    Navigation.programWithFlags UrlChange
         { init = init
         , update = Update.update
         , view = View.view
@@ -71,9 +71,17 @@ joinEventsChannel socket =
         ( phxSocket, phxCmd )
 
 
-init : Navigation.Location -> ( Model, Cmd Msg )
-init location =
+type alias Flags =
+    { activeCluster : Maybe String
+    }
+
+
+init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
+init flags location =
     let
+        _ =
+            Debug.log "FLAGS" flags
+
         ( stateSocket, stateCmd ) =
             joinStateChannel socket
 

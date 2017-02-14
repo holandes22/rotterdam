@@ -2,13 +2,9 @@ defmodule Rotterdam.PageController do
   use Rotterdam.Web, :controller
 
   def index(conn, _params) do
-    props = %{
-      clusters: [
-        %{id: 1, label: "ClusterA"},
-        %{id: 2, label: "Cluster2"},
-      ]
-    }
+    active_cluster = Rotterdam.ClusterManager.active_cluster()
+    flags = %{activeCluster: active_cluster}
 
-    render conn, "index.html", props: props
+    render conn, "index.html", flags: flags
   end
 end

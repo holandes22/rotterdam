@@ -12,8 +12,5 @@ window.Polymer = {
 
 
 window.addEventListener("WebComponentsReady", () => {
-  ElmApp.Main.fullscreen();
+  ElmApp.Main.fullscreen(window.__FLAGS__);
 });
-
-
-window.console.log("PROPS from page controller", window.__ROTTERDAM__);

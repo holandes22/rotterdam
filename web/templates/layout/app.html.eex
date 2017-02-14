@@ -13,7 +13,7 @@
   </head>
 
   <body>
-    <script>window.__ROTTERDAM__ = <%= raw Poison.encode!(@props) %></script>
+    <script>window.__FLAGS__ = <%= raw Poison.encode!(@flags) %></script>
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
