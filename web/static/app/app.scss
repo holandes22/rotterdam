@@ -12,9 +12,8 @@ body {
   margin: 0;
   height: 100%;
   width: 100%;
-  background: $background-color;
-  font-weight: 300;
-  color: $text-color;
+  background: rgba($light-grey, 0.4);
+  color: $dark-grey;
 
   main {
     padding-left: 3em;

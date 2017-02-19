@@ -1,10 +1,10 @@
-$menu-width-value: 18;
+$menu-width-value: 19;
 $menu-width: #{$menu-width-value}em;
 $menu-link-size: 1em;
 
-$background-color: #2e3642;
-$text-color: #e2e2e2;
-$selected-color: #ad4636;
+
+$text-color: $light-grey;
+$selected-color: $dark-blue;
 
 
 #layout, #nav-side-menu {
@@ -18,13 +18,15 @@ $selected-color: #ad4636;
 
 
 #nav-side-menu {
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
   margin-left: -$menu-width;
   width: $menu-width;
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
-  background: $dark-orange;
+  background: $dark-grey;
   overflow-y: auto;
 
   &.active {
@@ -54,14 +56,15 @@ $selected-color: #ad4636;
 
   .close {
     display: block;
+    cursor: pointer;
     position: absolute;
-    left: #{$menu-width-value - 1.5}em;
+    left: #{$menu-width-value - 2}em;
     padding: 5px;
-    color: rgba(0,0,0,0.4);
+    color: rgba(0,0,0,0.5);
     text-shadow: 0 2px 0 rgba(255,255,255,0.2);
 
     &:hover {
-      color: rgba(0,0,0,0.6);
+      color: rgba(0,0,0,0.8);
     }
 
   }
@@ -76,7 +79,7 @@ $selected-color: #ad4636;
   .menu-heading {
     margin: 0;
     padding: 1em;
-    color: rgba(0,0,0,0.6);
+    color: rgba(0,0,0,0.8);
     font-size: 1.8em;
     text-align: center;
     text-transform: uppercase;
@@ -111,7 +114,7 @@ $selected-color: #ad4636;
     }
 
     &:hover, &:focus {
-      background: $selected-color;
+      background: rgba($selected-color, 0.5);
     }
 
     i {
