@@ -2,8 +2,9 @@ module View.Clusters exposing (view)
 
 import Model exposing (Model)
 import Msg exposing (Msg(..))
-import Html.Events exposing (onClick)
 import Html exposing (Html, div, text, button, ul, li)
+import Html.Events exposing (onClick)
+import Html.Attributes exposing (class)
 import Types exposing (Cluster, NodeStatus)
 
 
@@ -39,10 +40,10 @@ viewCluster cluster =
     let
         btn =
             if cluster.active then
-                button [] [ text "Deactivate" ]
+                div [ class "ui button" ] [ text "Deactivate" ]
             else
-                button
-                    [ onClick (ActivateCluster cluster.id) ]
+                div
+                    [ class "ui button", onClick (ActivateCluster cluster.id) ]
                     [ text "Activate" ]
     in
         div []

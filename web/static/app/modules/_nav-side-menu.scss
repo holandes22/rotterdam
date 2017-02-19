@@ -114,7 +114,9 @@ $selected-color: $dark-blue;
     }
 
     &:hover, &:focus {
-      background: rgba($selected-color, 0.5);
+      &:not(.selected) {
+        background: rgba($selected-color, 0.5);
+      }
     }
 
     i {

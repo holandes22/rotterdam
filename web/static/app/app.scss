@@ -1,7 +1,5 @@
 @import "modules/modules";
 
-$text-color: $light-grey;
-
 .hidden,
 [hidden] {
     display: none !important;
@@ -12,7 +10,7 @@ body {
   margin: 0;
   height: 100%;
   width: 100%;
-  background: rgba($light-grey, 0.4);
+  background: rgba($light-grey, 0.2);
   color: $dark-grey;
 
   main {

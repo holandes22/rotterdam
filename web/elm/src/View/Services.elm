@@ -11,22 +11,17 @@ import Routing exposing (Route(..))
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ node "vaadin-grid"
-            []
-            [ table []
-                [ colgroup [] [ col [] [], col [] [], col [] [] ]
-                , thead []
-                    [ tr []
-                        [ th [] [ text "Name" ]
-                        , th [] [ text "Replicas" ]
-                        , th [] [ text "Image" ]
-                        , th [] [ text "ID" ]
-                        ]
-                    ]
-                , tbody [] (List.map viewServiceRow model.services)
+    table [ class "ui celled table" ]
+        [ thead []
+            [ tr []
+                [ th [] [ text "Name" ]
+                , th [] [ text "Replicas" ]
+                , th [] [ text "Image" ]
+                , th [] [ text "ID" ]
+                , th [] [ text "Actions" ]
                 ]
             ]
+        , tbody [] (List.map viewServiceRow model.services)
         ]
 
 
@@ -37,5 +32,6 @@ viewServiceRow service =
         , td [] [ text (toString service.replicas) ]
         , td [] [ text service.image ]
         , td [] [ text service.id ]
-        , td [] [ div [ onClick (GetService service.id) ] [ text "Details" ] ]
+        , td []
+            [ div [ class "ui button", onClick (GetService service.id) ] [ text "Details" ] ]
         ]
