@@ -1,7 +1,7 @@
 module View exposing (view)
 
-import Html exposing (Html, a, i, ul, li, div, text, main_)
-import Html.Attributes exposing (class, href, id, attribute, classList)
+import Html exposing (..)
+import Html.Attributes exposing (class, href, id, attribute, classList, name)
 import Html.Events exposing (onClick)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
@@ -16,10 +16,30 @@ import View.Clusters
 view : Model -> Html Msg
 view model =
     div []
-        [ div [ id "layout", classList [ ( "active", model.sideMenuActive ) ] ]
+        [ header
+        , div [ id "layout", classList [ ( "active", model.sideMenuActive ) ] ]
             [ nav model
             , main_ [ attribute "role" "main" ] [ body model ]
             , View.Events.view model
+            ]
+        ]
+
+
+header =
+    div [ class "ui top fixed huge inverted menu" ]
+        [ div [ class "right menu" ]
+            [ div [ class "ui simple dropdown icon item" ]
+                [ i [ class "bars icon" ]
+                    []
+                , div [ class "menu" ]
+                    [ div [ class "item" ]
+                        [ i [ class "terminal icon " ] [], text "choice 1" ]
+                    , div [ class "item" ]
+                        [ text "Choice 2" ]
+                    , div [ class "item" ]
+                        [ text "Choice 3" ]
+                    ]
+                ]
             ]
         ]
 

@@ -11,7 +11,7 @@ import Routing exposing (Route(..))
 
 view : Model -> Html Msg
 view model =
-    table [ class "ui celled table" ]
+    table [ class "ui single line table" ]
         [ thead []
             [ tr []
                 [ th [] [ text "Name" ]
