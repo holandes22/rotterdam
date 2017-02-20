@@ -1,3 +1,24 @@
+defmodule Cluster do
+  defstruct id: nil,
+            label: nil,
+            nodes: [],
+            active: false
+end
+
+
+defmodule CNode do
+  defstruct id: nil,
+            label: nil,
+            role: nil,
+            host: nil,
+            port: "2376",
+            cert_path: nil,
+            status: :stopped,
+            status_msg: "",
+            conn: nil
+end
+
+
 defmodule Rotterdam.ClusterManager do
   use GenServer
 
@@ -17,11 +38,12 @@ defmodule Rotterdam.ClusterManager do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  def init(_params) do
-    {:ok, %{active_cluster: nil, nodes: %{}}}
-  end
+  # TODO: return error if calling API with no active cluster
 
-  def cluster_status, do: GenServer.call(__MODULE__, :cluster_status)
+  def init(_params) do
+    clusters = get_configured_clusters()
+    {:ok, %{clusters: clusters}}
+  end
 
   def active_cluster, do: GenServer.call(__MODULE__, :active_cluster)
 
@@ -39,50 +61,26 @@ defmodule Rotterdam.ClusterManager do
   # GenServer callbacks
   # -------------------
 
-  def handle_call(:cluster_status, _from, %{active_cluster: nil} = state) do
-    {:reply, {:inactive, nil}, state}
-  end
-  def handle_call(:cluster_status, _from, state) do
-    status = cluster_status(state)
+  def handle_call({:connect, cluster_id}, _from, %{clusters: clusters} = state) do
+    # TODO: return error if no such cluster id
+    clusters =
+      cluster_id
+      |> get_cluster_by_id(clusters)
+      |> activate_cluster()
+      |> update_active_cluster(clusters)
 
-    {:reply, {:active, status}, state}
-  end
-
-  def handle_call({:connect, cluster}, _from, _state) do
-    nodes = start_nodes(cluster)
-    state = %{active_cluster: cluster, nodes: nodes}
-    status = cluster_status(state)
-
-    {:reply, status, state}
+    {:reply, clusters, %{state | clusters: clusters}}
   end
 
-  def handle_call(:active_cluster, _from, %{active_cluster: cluster} = state) do
+  def handle_call(:active_cluster, _from, %{clusters: clusters} = state) do
+    cluster = get_active_cluster(clusters)
     {:reply, cluster, state}
   end
 
-  def handle_call(:clusters, _from, state) do
-    %{active_cluster: active_cluster} = state
-    cluster1 = "cluster1"
-    cluster2 = "cluster2"
-
-    clusters = [
-      %{
-          id: cluster1,
-          label: "Alpha",
-          active: active_cluster == cluster1,
-        },
-      %{
-          id: cluster2,
-          label: "Beta",
-          active: active_cluster == cluster2,
-        }
-    ]
+  def handle_call(:clusters, _from, %{clusters: clusters} = state) do
     {:reply, clusters, state}
   end
 
-  def handle_call(:nodes, _from, %{active_cluster: nil} = state) do
-    {:reply, [], state}
-  end
   def handle_call(:nodes, _from, state) do
     conn = get_conn(:manager, state)
     response =
@@ -94,10 +92,6 @@ defmodule Rotterdam.ClusterManager do
     {:reply, response, state}
   end
 
-  def handle_call(:services, _from, %{active_cluster: nil} = state) do
-    # TODO: return error if called when cluster is not active
-    {:reply, [], state}
-  end
   def handle_call(:services, _from, state) do
     conn = get_conn(:manager, state)
     response =
@@ -119,9 +113,6 @@ defmodule Rotterdam.ClusterManager do
     {:reply, response, state}
   end
 
-  def handle_call(:containers_per_node, _from, %{active_cluster: nil} = state) do
-    {:reply, [], state}
-  end
   def handle_call(:containers_per_node, _from, state) do
     {:reply, containers_per_node(state), state}
   end
@@ -140,58 +131,90 @@ defmodule Rotterdam.ClusterManager do
     end
   end
 
-  defp cluster_status(state) do
-    %{
-      id: state.active_cluster,
-      label: state.active_cluster,
-      nodes: nodes_status(state.nodes)
-    }
-  end
-
-  defp nodes_status(nodes) do
-    for {node, value} <- nodes do
-      %{label: node, status: value.status}
-    end
-  end
-
   defp get_connected_nodes(state) do
+    # TODO: fix
     Enum.filter(state.nodes, fn({_label, value}) ->
       match?(%{conn: _conn}, value)
     end)
   end
 
-  defp get_conn(label, state) do
-    %{nodes: %{^label => %{conn: conn}}} = state
-    conn
+  defp get_conn(id, state) do
+    # TODO: id must be unique
+    # TODO: error if status is not :started
+    active_cluster = get_active_cluster(state.clusters)
+    node = Enum.find(active_cluster.nodes, fn(node) ->
+      match?(%{id: id}, node)
+    end)
+    node.conn
   end
 
-  defp get_cluster_params(_cluster) do
+  def get_active_cluster(clusters) do
+    Enum.find(clusters, fn(cluster) ->
+      match?(%Cluster{active: true}, cluster)
+    end)
+  end
+
+  defp get_cluster_by_id(id, clusters) do
+    Enum.find(clusters, fn(cluster) ->
+      match?(%Cluster{id: ^id}, cluster)
+    end)
+  end
+
+  defp get_configured_clusters() do
     [
-      {"192.168.99.100", "2376", "/home/pablo/.docker/machine/machines/cluster1-node1", :manager},
-      {"192.168.99.101", "2376", "/home/pablo/.docker/machine/machines/cluster1-node2", :worker1},
-      #{"192.168.99.102", "2376", "/home/pablo/.docker/machine/machines/cluster1-node3", :worker2},
+      %Cluster{
+        id: "cluster1",
+        label: "Alpha",
+        nodes: [
+          %CNode{
+            id: :manager,
+            label: "Manager",
+            role: :manager,
+            host: "192.168.99.100",
+            cert_path: "/home/pablo/.docker/machine/machines/cluster1-node1"
+          },
+          %CNode{
+            id: :worker1,
+            label: "Worker1",
+            role: :worker,
+            host: "192.168.99.101",
+            cert_path: "/home/pablo/.docker/machine/machines/cluster1-node2"
+          },
+        ]
+      },
     ]
   end
 
-  defp start_nodes(cluster) do
-    params_list = get_cluster_params(cluster)
+  defp update_active_cluster(cluster, clusters) do
+    index = Enum.find_index(clusters, fn(c) -> c.id == cluster.id end)
+    [cluster] ++ List.delete_at(clusters, index)
+  end
 
-    for params <- params_list, into: %{} do
-      {host, port, cert_path, label} = params
-      status = start_node(host, port, cert_path, label)
-      {label, status}
+  defp activate_cluster(cluster) do
+    nodes = start_nodes(cluster)
+    %Cluster{cluster | active: true, nodes: nodes}
+  end
+
+  defp start_nodes(cluster) do
+    for node <- cluster.nodes do
+      case start_node(node) do
+        {:ok, status, conn} ->
+          %CNode{node | conn: conn, status: status}
+        {:error, msg} ->
+          %CNode{node | status: :failed, status_msg: msg}
+      end
     end
   end
 
-  defp start_node(host, port, cert_path, label) do
+  defp start_node(%{host: host, port: port, cert_path: cert_path, id: id} = cluster) do
     case Dox.conn(host, port, cert_path) do
       {:ok, conn} ->
-        create_event_pipeline(conn, label)
+        create_event_pipeline(conn, id)
         Logger.info "Docker producer from host #{host} started"
-        %{status: :started, conn: conn}
+        {:ok, :started, conn}
       {:error, msg} ->
         Logger.error "Failed to start #{host}. #{msg}"
-        %{status: :failed, error: msg}
+        {:error, msg}
     end
   end
 
