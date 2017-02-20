@@ -2,9 +2,17 @@ defmodule Rotterdam.PageController do
   use Rotterdam.Web, :controller
 
   def index(conn, _params) do
-    active_cluster = Rotterdam.ClusterManager.active_cluster()
-    flags = %{activeCluster: active_cluster}
-
+    flags = %{clusterStatus: cluster_status()}
     render conn, "index.html", flags: flags
+  end
+
+  defp cluster_status do
+    case Rotterdam.ClusterManager.cluster_status() do
+      {:active, status} ->
+        status
+      {:inactive, nil} ->
+        nil
+    end
+
   end
 end

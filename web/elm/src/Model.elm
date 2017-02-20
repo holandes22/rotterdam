@@ -21,20 +21,21 @@ type alias Model =
     }
 
 
-initialModel : Navigation.Location -> Socket Msg -> Socket Msg -> Model
-initialModel location stateSocket eventsSocket =
-    let
-        route =
-            Routing.routeFromLocation location
-    in
-        { route = route
-        , baseUrl = "http://localhost:4000"
-        , stateSocket = stateSocket
-        , eventsSocket = stateSocket
-        , services = []
-        , shownService = Nothing
-        , events = []
-        , clusters = []
-        , clusterStatus = Nothing
-        , sideMenuActive = True
-        }
+initialModel :
+    Maybe Routing.Route
+    -> Socket Msg
+    -> Socket Msg
+    -> Maybe ClusterStatus
+    -> Model
+initialModel route stateSocket eventsSocket clusterStatus =
+    { route = route
+    , baseUrl = "http://localhost:4000"
+    , stateSocket = stateSocket
+    , eventsSocket = stateSocket
+    , services = []
+    , shownService = Nothing
+    , events = []
+    , clusters = []
+    , clusterStatus = clusterStatus
+    , sideMenuActive = True
+    }

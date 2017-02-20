@@ -9,6 +9,8 @@ import Json.Encode as Encode
 import Phoenix.Socket
 import Phoenix.Channel
 import Routing
+import Types exposing (ClusterStatus)
+import API
 
 
 main : Program Flags Model Msg
@@ -72,25 +74,40 @@ joinEventsChannel socket =
 
 
 type alias Flags =
-    { activeCluster : Maybe String
-    }
+    { clusterStatus : Maybe ClusterStatus }
 
 
 init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
 init flags location =
     let
-        _ =
-            Debug.log "FLAGS" flags
-
         ( stateSocket, stateCmd ) =
             joinStateChannel socket
 
         ( eventsSocket, eventsCmd ) =
             joinEventsChannel socket
 
+        route =
+            Routing.routeFromLocation location
+
         initialModel =
-            Model.initialModel location stateSocket eventsSocket
+            Model.initialModel route stateSocket eventsSocket flags.clusterStatus
+
+        cmds =
+            [ (Cmd.map PhoenixMsg stateCmd)
+            , (Cmd.map PhoenixMsg eventsCmd)
+            ]
+                ++ initialCmds route initialModel
     in
         ( initialModel
-        , Cmd.batch [ (Cmd.map PhoenixMsg stateCmd), (Cmd.map PhoenixMsg eventsCmd) ]
+        , Cmd.batch cmds
         )
+
+
+initialCmds : Maybe Routing.Route -> Model -> List (Cmd Msg)
+initialCmds route model =
+    case route of
+        Just (Routing.Clusters) ->
+            [ API.getClusters model.baseUrl ]
+
+        _ ->
+            [ Cmd.none ]

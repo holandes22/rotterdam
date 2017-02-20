@@ -37,10 +37,13 @@ defmodule Rotterdam.ClusterManager do
   # GenServer callbacks
   # -------------------
 
+  def handle_call(:cluster_status, _from, %{active_cluster: nil} = state) do
+    {:reply, {:inactive, nil}, state}
+  end
   def handle_call(:cluster_status, _from, state) do
     status = cluster_status(state)
 
-    {:reply, status, state}
+    {:reply, {:active, status}, state}
   end
 
   def handle_call({:connect, cluster}, _from, _state) do
@@ -181,6 +184,7 @@ defmodule Rotterdam.ClusterManager do
         start_stages(pid)
     end
   end
+
   defp start_stages(producer) do
     events_pid = Process.whereis(EventsBroadcast)
     state_pid = Process.whereis(StateBroadcast)

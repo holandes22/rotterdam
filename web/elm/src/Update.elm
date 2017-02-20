@@ -17,6 +17,7 @@ import Decoders
         , clusterStatusDecoder
         , dockerEventDecoder
         )
+import API exposing (getClusters)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -31,9 +32,13 @@ update msg model =
                     model ! [ Navigation.newUrl (Routing.urlFor location) ]
 
         UrlChange location ->
-            ( { model | route = routeFromLocation location }
-            , Cmd.none
-            )
+            let
+                route =
+                    routeFromLocation location
+            in
+                ( { model | route = route }
+                , Cmd.none
+                )
 
         OpenSideMenu ->
             ( { model | sideMenuActive = True }
@@ -121,11 +126,7 @@ update msg model =
                         model ! []
 
         GetClusters ->
-            model
-                ! [ clustersDecoder
-                        |> Http.get (model.baseUrl ++ "/api/clusters/")
-                        |> Http.send GotClusters
-                  ]
+            model ! [ getClusters model.baseUrl ]
 
         GotClusters result ->
             case result of
