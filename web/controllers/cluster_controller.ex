@@ -4,41 +4,7 @@ defmodule Rotterdam.ClusterController do
   alias Rotterdam.ClusterManager
 
   def index(conn, _params) do
-    clusters = [
-        %{
-          id: "c1",
-          label: "c1",
-          active: true,
-          nodes: [
-            %{
-              label: "n1",
-              status: :started
-            },
-            %{
-              label: "n2",
-              status: :failed
-            }
-
-          ]
-        },
-        %{
-          id: "c2",
-          label: "c2",
-          active: false,
-          nodes: [
-            %{
-              label: "n1",
-              status: :stopped
-            },
-            %{
-              label: "n2",
-              status: :stopped
-            }
-
-          ]
-        },
-      ]
-
+    clusters = ClusterManager.clusters()
     render conn, "index.json", clusters: clusters
   end
 

@@ -25,6 +25,8 @@ defmodule Rotterdam.ClusterManager do
 
   def active_cluster, do: GenServer.call(__MODULE__, :active_cluster)
 
+  def clusters, do: GenServer.call(__MODULE__, :clusters)
+
   def nodes, do: GenServer.call(__MODULE__, :nodes)
 
   def services, do: GenServer.call(__MODULE__, :services)
@@ -56,6 +58,26 @@ defmodule Rotterdam.ClusterManager do
 
   def handle_call(:active_cluster, _from, %{active_cluster: cluster} = state) do
     {:reply, cluster, state}
+  end
+
+  def handle_call(:clusters, _from, state) do
+    %{active_cluster: active_cluster} = state
+    cluster1 = "cluster1"
+    cluster2 = "cluster2"
+
+    clusters = [
+      %{
+          id: cluster1,
+          label: "Alpha",
+          active: active_cluster == cluster1,
+        },
+      %{
+          id: cluster2,
+          label: "Beta",
+          active: active_cluster == cluster2,
+        }
+    ]
+    {:reply, clusters, state}
   end
 
   def handle_call(:nodes, _from, %{active_cluster: nil} = state) do
