@@ -38,6 +38,7 @@ clusterDecoder =
         |: (Decode.field "id" Decode.string)
         |: (Decode.field "label" Decode.string)
         |: (Decode.field "active" Decode.bool)
+        |: (Decode.field "nodes" (Decode.list nodeDecoder))
 
 
 clustersDecoder : Decode.Decoder (List Cluster)
@@ -45,16 +46,11 @@ clustersDecoder =
     Decode.list clusterDecoder
 
 
-nodeStatusDecoder : Decode.Decoder NodeStatus
-nodeStatusDecoder =
-    Decode.succeed NodeStatus
-        |: (Decode.field "label" Decode.string)
-        |: (Decode.field "status" Decode.string)
-
-
-clusterStatusDecoder : Decode.Decoder ClusterStatus
-clusterStatusDecoder =
-    Decode.succeed ClusterStatus
+nodeDecoder : Decode.Decoder Node
+nodeDecoder =
+    Decode.succeed Node
         |: (Decode.field "id" Decode.string)
         |: (Decode.field "label" Decode.string)
-        |: (Decode.field "nodes" (Decode.list nodeStatusDecoder))
+        |: (Decode.field "role" Decode.string)
+        |: (Decode.field "host" Decode.string)
+        |: (Decode.field "status" Decode.string)

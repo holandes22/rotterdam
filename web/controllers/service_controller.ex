@@ -8,7 +8,7 @@ defmodule Rotterdam.ServiceController do
   end
 
   def show(conn, %{"id" => id}) do
-    service = ClusterManager.services(id)
+    {:ok, service} = ClusterManager.services(id)
     render(conn, "show.json", service: service)
   end
 

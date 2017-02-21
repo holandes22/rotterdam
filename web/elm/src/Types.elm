@@ -25,17 +25,19 @@ type alias Cluster =
     { id : String
     , label : String
     , active : Bool
+    , nodes : List Node
     }
 
 
-type alias NodeStatus =
-    { label : String
-    , status : String
-    }
+
+-- TODO: Add cert_path, port and status_msg fields
+-- and use the decoder in the flags passed to Main
 
 
-type alias ClusterStatus =
+type alias Node =
     { id : String
     , label : String
-    , nodes : List NodeStatus
+    , role : String
+    , host : String
+    , status : String
     }

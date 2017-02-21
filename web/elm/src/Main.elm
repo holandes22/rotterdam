@@ -9,7 +9,7 @@ import Json.Encode as Encode
 import Phoenix.Socket
 import Phoenix.Channel
 import Routing
-import Types exposing (ClusterStatus)
+import Types exposing (Cluster)
 import API
 
 
@@ -74,7 +74,7 @@ joinEventsChannel socket =
 
 
 type alias Flags =
-    { clusterStatus : Maybe ClusterStatus }
+    { activeCluster : Maybe Cluster }
 
 
 init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
@@ -90,7 +90,7 @@ init flags location =
             Routing.routeFromLocation location
 
         initialModel =
-            Model.initialModel route stateSocket eventsSocket flags.clusterStatus
+            Model.initialModel route stateSocket eventsSocket flags.activeCluster
 
         cmds =
             [ (Cmd.map PhoenixMsg stateCmd)

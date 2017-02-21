@@ -9,8 +9,8 @@ defmodule Rotterdam.ClusterController do
   end
 
   def activate(conn, %{"id" => id}) do
-    cluster_status = ClusterManager.connect(id)
-    render conn, "status.json", cluster_status: cluster_status
+    clusters = ClusterManager.connect(id)
+    render conn, "index.json", clusters: clusters
   end
 
 end

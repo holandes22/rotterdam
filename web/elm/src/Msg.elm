@@ -5,7 +5,7 @@ import Routing
 import Navigation
 import Phoenix.Socket
 import Json.Encode as Encode
-import Types exposing (Service, Cluster, ClusterStatus)
+import Types exposing (Service, Cluster)
 
 
 type Msg
@@ -22,4 +22,4 @@ type Msg
     | GetClusters
     | GotClusters (Result Http.Error (List Cluster))
     | ActivateCluster String
-    | ActivatedCluster (Result Http.Error ClusterStatus)
+    | ActivatedCluster (Result Http.Error (List Cluster))

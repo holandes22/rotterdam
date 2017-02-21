@@ -5,34 +5,34 @@ import Msg exposing (Msg(..))
 import Html exposing (Html, div, text, button, ul, li)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (class)
-import Types exposing (Cluster, NodeStatus)
+import Types exposing (Cluster, Node)
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ viewClusterStatus model
+        [ viewActiveCluster model
         , div []
             (List.map viewCluster model.clusters)
         ]
 
 
-viewClusterStatus : Model -> Html Msg
-viewClusterStatus model =
-    case model.clusterStatus of
-        Just status ->
+viewActiveCluster : Model -> Html Msg
+viewActiveCluster model =
+    case model.activeCluster of
+        Just cluster ->
             div []
-                [ text ("Cluster " ++ status.label ++ " status")
-                , ul [] (List.map viewNodeStatus status.nodes)
+                [ text ("Cluster " ++ cluster.label ++ " status")
+                , ul [] (List.map viewNode cluster.nodes)
                 ]
 
         Nothing ->
             div [] [ text "No active cluster" ]
 
 
-viewNodeStatus : NodeStatus -> Html Msg
-viewNodeStatus status =
-    li [] [ text (status.label ++ " : " ++ status.status) ]
+viewNode : Node -> Html Msg
+viewNode node =
+    li [] [ text (node.label ++ " : " ++ node.status) ]
 
 
 viewCluster : Cluster -> Html Msg

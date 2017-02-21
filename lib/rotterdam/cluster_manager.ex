@@ -7,6 +7,10 @@ defmodule Cluster do
 end
 
 
+# TODO: conn field does not belong here as it is
+# an internal detail of the manager. Refactor
+# start_nodes to handle this and hold the conns
+# in state instead
 defmodule ManagedNode do
   defstruct id: nil,
             label: nil,
@@ -39,8 +43,6 @@ defmodule Rotterdam.ClusterManager do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
-  # TODO: return error if calling API with no active cluster
-
   def init(_params) do
     clusters = get_configured_clusters()
     {:ok, %{active_cluster: nil, clusters: clusters}}
@@ -62,7 +64,7 @@ defmodule Rotterdam.ClusterManager do
   # GenServer callbacks
   # -------------------
 
-  def handle_call({:connect, cluster_id}, _from, %{clusters: clusters} = state) do
+  def handle_call({:connect, cluster_id}, _from, %{clusters: clusters}) do
     # TODO: return error if no such cluster id
     state =
       cluster_id
@@ -70,14 +72,23 @@ defmodule Rotterdam.ClusterManager do
       |> activate_cluster()
       |> get_active_state(clusters)
 
-    {:reply, state.clusters, state}
+    clusters =
+      state.clusters
+      |> remove_conns()
+
+    {:reply, clusters, state}
   end
 
+  def handle_call(:active_cluster, _from, %{active_cluster: nil} = state) do
+    {:reply, nil, state}
+  end
   def handle_call(:active_cluster, _from, %{active_cluster: cluster} = state) do
+    cluster = remove_conns(cluster)
     {:reply, cluster, state}
   end
 
   def handle_call(:clusters, _from, %{clusters: clusters} = state) do
+    clusters = remove_conns(clusters)
     {:reply, clusters, state}
   end
 
@@ -210,7 +221,7 @@ defmodule Rotterdam.ClusterManager do
     end
   end
 
-  defp start_node(%{host: host, port: port, cert_path: cert_path, id: id} = cluster) do
+  defp start_node(%{host: host, port: port, cert_path: cert_path, id: id}) do
     case Dox.conn(host, port, cert_path) do
       {:ok, conn} ->
         create_event_pipeline(conn, id)
@@ -240,6 +251,19 @@ defmodule Rotterdam.ClusterManager do
 
     GenStage.sync_subscribe(events_pid, to: producer)
     GenStage.sync_subscribe(state_pid, to: producer)
+  end
+
+  defp remove_conns(%Cluster{} = cluster) do
+    nodes = for node <- cluster.nodes do
+      Map.delete(node, :conn)
+    end
+
+    %{cluster | nodes: nodes}
+  end
+  defp remove_conns(clusters) when is_list(clusters) do
+    for cluster <- clusters do
+      remove_conns(cluster)
+    end
   end
 
 end

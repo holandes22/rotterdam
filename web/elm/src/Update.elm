@@ -14,7 +14,6 @@ import Decoders
         ( serviceDecoder
         , servicesDecoder
         , clustersDecoder
-        , clusterStatusDecoder
         , dockerEventDecoder
         )
 import API exposing (getClusters)
@@ -144,17 +143,21 @@ update msg model =
 
         ActivateCluster id ->
             model
-                ! [ clusterStatusDecoder
+                ! [ clustersDecoder
                         |> Http.post (model.baseUrl ++ "/api/clusters/" ++ id ++ "/activate") Http.emptyBody
                         |> Http.send ActivatedCluster
                   ]
 
         ActivatedCluster result ->
             case result of
-                Ok clusterStatus ->
-                    ( { model | clusterStatus = Just clusterStatus }
-                    , Navigation.newUrl (urlFor Clusters)
-                    )
+                Ok clusters ->
+                    let
+                        activeCluster =
+                            List.head clusters
+                    in
+                        ( { model | clusters = clusters, activeCluster = activeCluster }
+                        , Navigation.newUrl (urlFor Clusters)
+                        )
 
                 Err err ->
                     let
