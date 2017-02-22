@@ -75,7 +75,7 @@ nav model =
                     [ a
                         [ class "menu-link"
                         , classList [ ( "selected", selected model.route Clusters ) ]
-                        , onClick GetClusters
+                        , onClick GetCluster
                         ]
                         [ i [ class "fa fa-server" ] []
                         , text "Clusters"

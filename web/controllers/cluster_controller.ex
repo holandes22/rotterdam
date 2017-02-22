@@ -4,13 +4,13 @@ defmodule Rotterdam.ClusterController do
   alias Rotterdam.ClusterManager
 
   def index(conn, _params) do
-    clusters = ClusterManager.clusters()
-    render conn, "index.json", clusters: clusters
+    cluster = ClusterManager.cluster()
+    render conn, "index.json", cluster: cluster
   end
 
-  def activate(conn, %{"id" => id}) do
-    clusters = ClusterManager.connect(id)
-    render conn, "index.json", clusters: clusters
+  def connect(conn, _params) do
+    cluster = ClusterManager.connect()
+    render conn, "index.json", cluster: cluster
   end
 
 end

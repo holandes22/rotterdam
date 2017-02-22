@@ -2,8 +2,7 @@ defmodule Rotterdam.PageController do
   use Rotterdam.Web, :controller
 
   def index(conn, _params) do
-    flags = %{activeCluster: Rotterdam.ClusterManager.active_cluster()}
-    IO.inspect flags
+    flags = %{cluster: Rotterdam.ClusterManager.cluster()}
     render conn, "index.html", flags: flags
   end
 

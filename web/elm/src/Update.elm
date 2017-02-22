@@ -13,10 +13,10 @@ import Decoders
     exposing
         ( serviceDecoder
         , servicesDecoder
-        , clustersDecoder
+        , clusterDecoder
         , dockerEventDecoder
         )
-import API exposing (getClusters)
+import API exposing (getCluster)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -124,13 +124,13 @@ update msg model =
                     in
                         model ! []
 
-        GetClusters ->
-            model ! [ getClusters model.baseUrl ]
+        GetCluster ->
+            model ! [ getCluster model.baseUrl ]
 
-        GotClusters result ->
+        GotCluster result ->
             case result of
-                Ok clusters ->
-                    ( { model | clusters = clusters }
+                Ok cluster ->
+                    ( { model | cluster = cluster }
                     , Navigation.newUrl (urlFor Clusters)
                     )
 
@@ -141,27 +141,9 @@ update msg model =
                     in
                         model ! []
 
-        ActivateCluster id ->
+        ActivateCluster ->
             model
-                ! [ clustersDecoder
-                        |> Http.post (model.baseUrl ++ "/api/clusters/" ++ id ++ "/activate") Http.emptyBody
-                        |> Http.send ActivatedCluster
+                ! [ clusterDecoder
+                        |> Http.post (model.baseUrl ++ "/api/cluster/connect") Http.emptyBody
+                        |> Http.send GotCluster
                   ]
-
-        ActivatedCluster result ->
-            case result of
-                Ok clusters ->
-                    let
-                        activeCluster =
-                            List.head clusters
-                    in
-                        ( { model | clusters = clusters, activeCluster = activeCluster }
-                        , Navigation.newUrl (urlFor Clusters)
-                        )
-
-                Err err ->
-                    let
-                        _ =
-                            Debug.log "err" err
-                    in
-                        model ! []

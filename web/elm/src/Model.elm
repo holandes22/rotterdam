@@ -15,8 +15,7 @@ type alias Model =
     , services : List Service
     , shownService : Maybe Service
     , events : List DockerEvent
-    , clusters : List Cluster
-    , activeCluster : Maybe Cluster
+    , cluster : Cluster
     , sideMenuActive : Bool
     }
 
@@ -25,9 +24,9 @@ initialModel :
     Maybe Routing.Route
     -> Socket Msg
     -> Socket Msg
-    -> Maybe Cluster
+    -> Cluster
     -> Model
-initialModel route stateSocket eventsSocket activeCluster =
+initialModel route stateSocket eventsSocket cluster =
     { route = route
     , baseUrl = "http://localhost:4000"
     , stateSocket = stateSocket
@@ -35,7 +34,6 @@ initialModel route stateSocket eventsSocket activeCluster =
     , services = []
     , shownService = Nothing
     , events = []
-    , clusters = []
-    , activeCluster = activeCluster
+    , cluster = cluster
     , sideMenuActive = True
     }

@@ -11,23 +11,17 @@ import Types exposing (Cluster, Node)
 view : Model -> Html Msg
 view model =
     div []
-        [ viewActiveCluster model
-        , div []
-            (List.map viewCluster model.clusters)
+        [ viewNodes model.cluster
+        , viewClusterConnect model.cluster
         ]
 
 
-viewActiveCluster : Model -> Html Msg
-viewActiveCluster model =
-    case model.activeCluster of
-        Just cluster ->
-            div []
-                [ text ("Cluster " ++ cluster.label ++ " status")
-                , ul [] (List.map viewNode cluster.nodes)
-                ]
-
-        Nothing ->
-            div [] [ text "No active cluster" ]
+viewNodes : Cluster -> Html Msg
+viewNodes cluster =
+    div []
+        [ text ("Cluster " ++ cluster.label ++ " status")
+        , ul [] (List.map viewNode cluster.nodes)
+        ]
 
 
 viewNode : Node -> Html Msg
@@ -35,18 +29,16 @@ viewNode node =
     li [] [ text (node.label ++ " : " ++ node.status) ]
 
 
-viewCluster : Cluster -> Html Msg
-viewCluster cluster =
+viewClusterConnect : Cluster -> Html Msg
+viewClusterConnect cluster =
     let
-        btn =
-            if cluster.active then
-                div [ class "ui button" ] [ text "Deactivate" ]
+        child =
+            if not cluster.connected then
+                div [ class "ui button", onClick ActivateCluster ] [ text "Connect" ]
             else
-                div
-                    [ class "ui button", onClick (ActivateCluster cluster.id) ]
-                    [ text "Activate" ]
+                div [] []
     in
         div []
             [ text cluster.label
-            , btn
+            , child
             ]

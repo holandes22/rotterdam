@@ -35,15 +35,9 @@ dockerEventDecoder =
 clusterDecoder : Decode.Decoder Cluster
 clusterDecoder =
     Decode.succeed Cluster
-        |: (Decode.field "id" Decode.string)
         |: (Decode.field "label" Decode.string)
-        |: (Decode.field "active" Decode.bool)
+        |: (Decode.field "connected" Decode.bool)
         |: (Decode.field "nodes" (Decode.list nodeDecoder))
-
-
-clustersDecoder : Decode.Decoder (List Cluster)
-clustersDecoder =
-    Decode.list clusterDecoder
 
 
 nodeDecoder : Decode.Decoder Node

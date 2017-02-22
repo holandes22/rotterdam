@@ -74,7 +74,7 @@ joinEventsChannel socket =
 
 
 type alias Flags =
-    { activeCluster : Maybe Cluster }
+    { cluster : Cluster }
 
 
 init : Flags -> Navigation.Location -> ( Model, Cmd Msg )
@@ -90,7 +90,7 @@ init flags location =
             Routing.routeFromLocation location
 
         initialModel =
-            Model.initialModel route stateSocket eventsSocket flags.activeCluster
+            Model.initialModel route stateSocket eventsSocket flags.cluster
 
         cmds =
             [ (Cmd.map PhoenixMsg stateCmd)
@@ -107,7 +107,7 @@ initialCmds : Maybe Routing.Route -> Model -> List (Cmd Msg)
 initialCmds route model =
     case route of
         Just (Routing.Clusters) ->
-            [ API.getClusters model.baseUrl ]
+            [ API.getCluster model.baseUrl ]
 
         _ ->
             [ Cmd.none ]

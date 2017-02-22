@@ -9,7 +9,7 @@ defmodule Rotterdam.StateChannel do
       case ClusterManager.services() do
         {:ok, services} ->
           services
-        {:error, :no_active_cluster} ->
+        {:error, _error} ->
           # TODO: return a proper error
           []
       end

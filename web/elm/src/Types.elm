@@ -22,9 +22,8 @@ type alias DockerEvent =
 
 
 type alias Cluster =
-    { id : String
-    , label : String
-    , active : Bool
+    { label : String
+    , connected : Bool
     , nodes : List Node
     }
 

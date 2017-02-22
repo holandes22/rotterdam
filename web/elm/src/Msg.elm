@@ -19,7 +19,6 @@ type Msg
     | ReceiveDockerEvent Encode.Value
     | GetService String
     | GotService (Result Http.Error Service)
-    | GetClusters
-    | GotClusters (Result Http.Error (List Cluster))
-    | ActivateCluster String
-    | ActivatedCluster (Result Http.Error (List Cluster))
+    | GetCluster
+    | GotCluster (Result Http.Error Cluster)
+    | ActivateCluster
