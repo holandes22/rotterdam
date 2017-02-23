@@ -1,6 +1,7 @@
 module Update exposing (update)
 
 import Http
+import RemoteData
 import Navigation
 import Phoenix.Socket
 import UrlParser as Url
@@ -16,7 +17,7 @@ import Decoders
         , clusterDecoder
         , dockerEventDecoder
         )
-import API exposing (getCluster)
+import API exposing (getCluster, connectCluster)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -125,25 +126,16 @@ update msg model =
                         model ! []
 
         GetCluster ->
-            model ! [ getCluster model.baseUrl ]
+            ( { model | cluster = RemoteData.Loading }
+            , getCluster model.baseUrl
+            )
 
-        GotCluster result ->
-            case result of
-                Ok cluster ->
-                    ( { model | cluster = cluster }
-                    , Navigation.newUrl (urlFor Clusters)
-                    )
-
-                Err err ->
-                    let
-                        _ =
-                            Debug.log "err" err
-                    in
-                        model ! []
+        GotCluster cluster ->
+            ( { model | cluster = cluster }
+            , Cmd.none
+            )
 
         ActivateCluster ->
-            model
-                ! [ clusterDecoder
-                        |> Http.post (model.baseUrl ++ "/api/cluster/connect") Http.emptyBody
-                        |> Http.send GotCluster
-                  ]
+            ( { model | cluster = RemoteData.Loading }
+            , connectCluster model.baseUrl
+            )

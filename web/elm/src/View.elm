@@ -11,6 +11,7 @@ import View.Services
 import View.Events
 import View.Services.Show
 import View.Clusters
+import API exposing (getCluster, connectCluster)
 
 
 view : Model -> Html Msg
@@ -75,7 +76,7 @@ nav model =
                     [ a
                         [ class "menu-link"
                         , classList [ ( "selected", selected model.route Clusters ) ]
-                        , onClick GetCluster
+                        , onClick (NavigateTo (Just Clusters))
                         ]
                         [ i [ class "fa fa-server" ] []
                         , text "Clusters"

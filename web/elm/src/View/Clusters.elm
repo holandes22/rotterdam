@@ -6,14 +6,26 @@ import Html exposing (Html, div, text, button, ul, li)
 import Html.Events exposing (onClick)
 import Html.Attributes exposing (class)
 import Types exposing (Cluster, Node)
+import RemoteData exposing (..)
 
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ viewNodes model.cluster
-        , viewClusterConnect model.cluster
-        ]
+    case model.cluster of
+        NotAsked ->
+            text "should not happen"
+
+        Loading ->
+            text "Loading cluster..."
+
+        Failure err ->
+            text ("Error: " ++ toString err)
+
+        Success cluster ->
+            div []
+                [ viewNodes cluster
+                , viewClusterConnect cluster
+                ]
 
 
 viewNodes : Cluster -> Html Msg

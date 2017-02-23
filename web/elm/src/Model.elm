@@ -5,6 +5,7 @@ import Routing
 import Types exposing (..)
 import Navigation
 import Phoenix.Socket exposing (Socket)
+import RemoteData exposing (WebData)
 
 
 type alias Model =
@@ -15,7 +16,7 @@ type alias Model =
     , services : List Service
     , shownService : Maybe Service
     , events : List DockerEvent
-    , cluster : Cluster
+    , cluster : WebData Cluster
     , sideMenuActive : Bool
     }
 
@@ -34,6 +35,6 @@ initialModel route stateSocket eventsSocket cluster =
     , services = []
     , shownService = Nothing
     , events = []
-    , cluster = cluster
+    , cluster = RemoteData.Success cluster
     , sideMenuActive = True
     }

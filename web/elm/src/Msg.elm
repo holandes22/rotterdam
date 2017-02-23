@@ -6,6 +6,7 @@ import Navigation
 import Phoenix.Socket
 import Json.Encode as Encode
 import Types exposing (Service, Cluster)
+import RemoteData exposing (WebData)
 
 
 type Msg
@@ -20,5 +21,5 @@ type Msg
     | GetService String
     | GotService (Result Http.Error Service)
     | GetCluster
-    | GotCluster (Result Http.Error Cluster)
+    | GotCluster (WebData Cluster)
     | ActivateCluster

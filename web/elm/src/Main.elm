@@ -105,9 +105,9 @@ init flags location =
 
 initialCmds : Maybe Routing.Route -> Model -> List (Cmd Msg)
 initialCmds route model =
-    case route of
-        Just (Routing.Clusters) ->
-            [ API.getCluster model.baseUrl ]
-
-        _ ->
-            [ Cmd.none ]
+    -- case route of
+    --     Just (Routing.Clusters) ->
+    --         [ API.getCluster model.baseUrl ]
+    --
+    --     _ ->
+    [ Cmd.none ]
