@@ -42,7 +42,8 @@ defmodule Rotterdam.Mixfile do
       {:gen_stage, "~> 0.11.0"},
       {:maxwell, "~> 2.1"},
       {:cors_plug, "~> 1.2"},
-      {:credo, "~> 0.6", only: [:dev, :test]}
+      {:credo, "~> 0.6", only: [:dev, :test]},
+      {:bypass, "~> 0.6", only: :test}
     ]
   end
 

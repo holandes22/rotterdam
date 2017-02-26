@@ -41,3 +41,24 @@ config :rotterdam, Rotterdam.Repo,
   database: "rotterdam_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :rotterdam,
+  cluster: %{
+      label: "Alpha",
+      nodes: [
+        %{
+          id: :node1,
+          label: "Manager",
+          role: :manager,
+          host: "192.168.99.100",
+          cert_path: "/home/pablo/.docker/machine/machines/cluster1-node1"
+        },
+        %{
+          id: :node2,
+          label: "Worker1",
+          role: :worker,
+          host: "192.168.99.101",
+          cert_path: "/home/pablo/.docker/machine/machines/cluster1-node2"
+        }
+      ]
+    }
