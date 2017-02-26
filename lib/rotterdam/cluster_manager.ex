@@ -32,6 +32,8 @@ defmodule Rotterdam.ClusterManager do
 
   def containers_per_node, do: GenServer.call(__MODULE__, :containers_per_node)
 
+  def clear_conn, do: GenServer.call(__MODULE__, :clear_conn)
+
   # GenServer callbacks
   # -------------------
 
@@ -39,7 +41,12 @@ defmodule Rotterdam.ClusterManager do
     {:reply, cluster, state}
   end
 
-  def handle_call({:connect, cluster, [start_event_pipeline: start_event_pipeline]}, _from, state) do
+  def handle_call(:clear_conn, _from, _state) do
+    state = %{cluster: nil, conns: nil}
+    {:reply, state, state}
+  end
+
+  def handle_call({:connect, cluster, [start_event_pipeline: start_event_pipeline]}, _from, _state) do
     cluster = cluster || cluster_config()
 
     state =
@@ -97,13 +104,13 @@ defmodule Rotterdam.ClusterManager do
   defp ok({:ok, value}), do: value
 
   defp containers_per_node(state)do
-    for %{conn: conn, label: label} <- state.conns, into: [] do
+    for %{conn: conn, node: node} <- state.conns, into: [] do
       containers =
         conn
         |> Dox.containers()
         |> ok()
 
-      %{label: label, containers: containers}
+      %{label: node.label, containers: containers}
     end
   end
 
@@ -114,21 +121,13 @@ defmodule Rotterdam.ClusterManager do
 
   defp get_conn_by_role(role, conns) do
     Enum.find(conns, fn(conn) ->
-      match?(%{role: ^role}, conn)
+      match?(%{node: %{role: ^role}}, conn)
     end)
   end
 
   defp get_state_from_connect_results(results, cluster) do
-    nodes = for result <- results do
-      %{result.node | status: result.status, status_msg: result.status_msg}
-    end
-
-    conns =
-      results
-      |> Enum.filter(fn(%{conn: conn}) -> conn != nil end)
-      |> Enum.map(fn(%{conn: conn, node: %{id: id, label: label, role: role}}) ->
-          %{id: id, label: label, role: role, conn: conn}
-        end)
+    nodes = Enum.map(results, fn(r) -> r.node end)
+    conns = Enum.filter(results, fn(r) -> r.conn != nil end)
 
     cluster = %{cluster | nodes: nodes, connected: true}
 
@@ -140,18 +139,22 @@ defmodule Rotterdam.ClusterManager do
       case Dox.conn(node.host, node.port, node.cert_path) do
         {:ok, conn} ->
           Logger.info "Connection to #{node.host} was succesful"
-          %{node: node, conn: conn, status: :started, status_msg: "Started"}
+          node = %{node | status: :started, status_msg: "Started"}
+
+          %{node: node, conn: conn}
         {:error, msg} ->
           Logger.error "Failed to start #{node.host}. #{msg}"
-          %{node: node, conn: nil, status: :failed, status_msg: msg}
+          node = %{node | status: :failed, status_msg: msg}
+
+          %{node: node, conn: nil}
       end
     end
   end
 
   defp create_event_pipeline(conns) when is_list(conns) do
-    for %{conn: conn, label: label, id: id} <- conns do
-      create_event_pipeline(conn, id, label)
-      Logger.info "Docker producer for node #{label} started"
+    for %{conn: conn, node: node} <- conns do
+      create_event_pipeline(conn, node.id, node.label)
+      Logger.info "Docker producer for node #{node.label} (#{node.host}) started"
     end
   end
   defp create_event_pipeline(conn, node_id, label) do

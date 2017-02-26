@@ -8,6 +8,22 @@ defmodule Rotterdam.ClusterManagerTest do
     {:ok, bypass: bypass}
   end
 
+  test "getting resources with inactive cluster" do
+    ClusterManager.clear_conn()
+    assert ClusterManager.nodes == {:error, :cluster_inactive}
+  end
+
+  test "getting resources with no connections", %{bypass: bypass} do
+    Bypass.expect bypass, fn conn ->
+      Plug.Conn.resp(conn, 500, "")
+    end
+
+    ClusterManager.clear_conn()
+    connect(bypass)
+
+    assert ClusterManager.nodes == {:error, :no_active_conns}
+  end
+
   test "connection", %{bypass: bypass} do
     Bypass.expect bypass, fn conn ->
       assert "/v1.24/version" == conn.request_path
