@@ -47,7 +47,6 @@ defmodule Rotterdam.ClusterManagerTest do
 
   defp cluster_config(port) do
     %Managed.Cluster{
-      label: "Alpha",
       nodes: [
         %Managed.Node{
           id: :node1,

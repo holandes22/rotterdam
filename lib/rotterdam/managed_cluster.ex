@@ -1,5 +1,4 @@
 defmodule Rotterdam.Managed.Cluster do
-  defstruct label: nil,
-            connected: false,
+  defstruct connected: false,
             nodes: []
 end

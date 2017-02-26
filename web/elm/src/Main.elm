@@ -74,7 +74,7 @@ joinEventsChannel socket =
 
 
 type alias Flags =
-    { cluster : Cluster }
+    { cluster : Maybe Cluster }
 
 
 init : Flags -> Navigation.Location -> ( Model, Cmd Msg )

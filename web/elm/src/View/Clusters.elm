@@ -23,15 +23,15 @@ view model =
 
         Success cluster ->
             div []
-                [ viewNodes cluster
+                [ viewCluster cluster
                 , viewClusterConnect cluster
                 ]
 
 
-viewNodes : Cluster -> Html Msg
-viewNodes cluster =
+viewCluster : Cluster -> Html Msg
+viewCluster cluster =
     div []
-        [ text ("Cluster " ++ cluster.label ++ " status")
+        [ text ("Cluster status")
         , ul [] (List.map viewNode cluster.nodes)
         ]
 
@@ -43,14 +43,7 @@ viewNode node =
 
 viewClusterConnect : Cluster -> Html Msg
 viewClusterConnect cluster =
-    let
-        child =
-            if not cluster.connected then
-                div [ class "ui button", onClick ActivateCluster ] [ text "Connect" ]
-            else
-                div [] []
-    in
-        div []
-            [ text cluster.label
-            , child
-            ]
+    if not cluster.connected then
+        div [ class "ui button", onClick ActivateCluster ] [ text "Connect" ]
+    else
+        div [] []

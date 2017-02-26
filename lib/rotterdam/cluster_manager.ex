@@ -42,7 +42,9 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def handle_call(:clear_conn, _from, _state) do
+    Supervisor.stop(PipelineSupervisor, :normal)
     state = %{cluster: nil, conns: nil}
+
     {:reply, state, state}
   end
 
@@ -178,14 +180,12 @@ defmodule Rotterdam.ClusterManager do
   end
 
   defp cluster_config() do
-    params = Application.get_env(:rotterdam, :cluster)
-    cluster = Map.merge(%Managed.Cluster{}, params)
+    nodes =
+      :rotterdam
+      |> Application.get_env(:managed_nodes)
+      |> Enum.map(&Map.merge(%Managed.Node{}, &1))
 
-    nodes = for node <- params.nodes do
-      Map.merge(%Managed.Node{}, node)
-    end
-
-    %{cluster | nodes: nodes}
+    %Managed.Cluster{nodes: nodes}
   end
 
 end

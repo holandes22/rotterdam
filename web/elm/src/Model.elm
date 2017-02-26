@@ -25,16 +25,23 @@ initialModel :
     Maybe Routing.Route
     -> Socket Msg
     -> Socket Msg
-    -> Cluster
+    -> Maybe Cluster
     -> Model
-initialModel route stateSocket eventsSocket cluster =
-    { route = route
-    , baseUrl = "http://localhost:4000"
-    , stateSocket = stateSocket
-    , eventsSocket = stateSocket
-    , services = []
-    , shownService = Nothing
-    , events = []
-    , cluster = RemoteData.Success cluster
-    , sideMenuActive = True
-    }
+initialModel route stateSocket eventsSocket cluster_ =
+    let
+        defaultCluster =
+            { connected = False, nodes = [] }
+
+        cluster =
+            Maybe.withDefault defaultCluster cluster_
+    in
+        { route = route
+        , baseUrl = "http://localhost:4000"
+        , stateSocket = stateSocket
+        , eventsSocket = stateSocket
+        , services = []
+        , shownService = Nothing
+        , events = []
+        , cluster = RemoteData.Success cluster
+        , sideMenuActive = True
+        }
