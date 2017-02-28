@@ -17,6 +17,13 @@ defmodule Rotterdam.Event.Docker.StateBroadcast do
     {:noreply, [], state}
   end
 
+  def handle_info(:broadcast_all, state) do
+    spawn &broadcast_containers/0
+    spawn &broadcast_services/0
+
+    {:noreply, [], state}
+  end
+
   defp broadcast_containers do
     {:ok, containers} = ClusterManager.containers_per_node()
     Endpoint.broadcast! "state:docker", "containers", %{containers: containers}

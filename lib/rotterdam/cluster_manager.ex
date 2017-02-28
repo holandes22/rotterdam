@@ -58,6 +58,7 @@ defmodule Rotterdam.ClusterManager do
 
     if start_event_pipeline do
       create_event_pipeline(state.conns)
+      update_clients()
     end
 
     {:reply, state.cluster, state}
@@ -67,9 +68,9 @@ defmodule Rotterdam.ClusterManager do
   def handle_call(_, _from, %{conns: []} = state), do: {:reply, {:error, :no_active_conns}, state}
 
   def handle_call(:nodes, _from, state) do
-    conn = get_conn(state)
     reply =
-      conn
+      state
+      |> get_conn()
       |> Dox.nodes()
       |> ok()
       |> Node.normalize()
@@ -78,9 +79,9 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def handle_call(:services, _from, state) do
-    conn = get_conn(state)
     reply =
-      conn
+      state
+      |> get_conn()
       |> Dox.services()
       |> ok()
       |> Service.normalize()
@@ -89,9 +90,9 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def handle_call({:services, id}, _from, state) do
-    conn = get_conn(state)
     reply =
-      conn
+      state
+      |> get_conn()
       |> Dox.services(id)
       |> ok()
       |> Service.normalize()
@@ -151,6 +152,11 @@ defmodule Rotterdam.ClusterManager do
           %{node: node, conn: nil}
       end
     end
+  end
+
+  defp update_clients() do
+    state_pid = Process.whereis(StateBroadcast)
+    send state_pid, :broadcast_all
   end
 
   defp create_event_pipeline(conns) when is_list(conns) do
