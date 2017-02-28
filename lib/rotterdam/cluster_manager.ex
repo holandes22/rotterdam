@@ -123,9 +123,7 @@ defmodule Rotterdam.ClusterManager do
   end
 
   defp get_conn_by_role(role, conns) do
-    Enum.find(conns, fn(conn) ->
-      match?(%{node: %{role: ^role}}, conn)
-    end)
+    Enum.find(conns, &match?(%{node: %{role: ^role}}, &1))
   end
 
   defp get_state_from_connect_results(results, cluster) do

@@ -7,6 +7,7 @@ import UrlParser as Url exposing (s, top, parseHash, string, (</>))
 type Route
     = Home
     | Services
+    | NewService
     | ShowService String
     | Clusters
 
@@ -16,6 +17,7 @@ route =
     Url.oneOf
         [ Url.map Home top
         , Url.map Services (s "services")
+        , Url.map NewService (s "services" </> s "new")
         , Url.map ShowService (s "services" </> string)
         , Url.map Clusters (s "clusters")
           -- , Url.map BlogList (s "blog" <?> stringParam "search")
@@ -37,6 +39,9 @@ urlFor route =
 
                 Services ->
                     "/services"
+
+                NewService ->
+                    "/services/new"
 
                 ShowService id ->
                     "/services/" ++ id

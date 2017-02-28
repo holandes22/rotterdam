@@ -23,7 +23,8 @@ defmodule Dox do
 
     base_url = "#{scheme}://#{host}:#{port}/v1.24"
 
-    conn = base_url
+    conn =
+      base_url
       |> new()
       |> put_option(opts)
 
@@ -39,8 +40,8 @@ defmodule Dox do
     conn
       |> put_option(opts)
       |> put_path("/version")
-      |> get
-      |> response
+      |> get()
+      |> response()
   end
 
   def nodes(conn), do: conn |> put_path("/nodes") |> get |> response
@@ -63,8 +64,8 @@ defmodule Dox do
     conn
       |> put_path("/services/create")
       |> put_req_body(config)
-      |> post
-      |> response
+      |> post()
+      |> response()
   end
 
   def remove_service(conn, id) do
@@ -121,11 +122,11 @@ defmodule Dox do
   end
   defp response({:error, error, %Maxwell.Conn{url: url}}) do
       %URI{port: port} = URI.parse(url)
-      msg = err_message(error, port, url)
+      msg = format_error(error, port, url)
       {:error, msg}
   end
 
-  defp err_message(reason, port, base_url) do
+  defp format_error(reason, port, base_url) do
     case reason do
       :bad_request ->
         "Bad request using base URL #{base_url}"

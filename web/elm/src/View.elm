@@ -10,6 +10,7 @@ import View.Home
 import View.Services
 import View.Events
 import View.Services.Show
+import View.Services.New
 import View.Clusters
 import API exposing (getCluster, connectCluster)
 
@@ -57,7 +58,7 @@ nav model =
                 []
             ]
         , div []
-            [ div [ class "menu-heading", onClick (NavigateTo (Just Home)) ]
+            [ div [ class "menu-heading", onClick <| NavigateTo (Just Home) ]
                 [ i [ class "fa fa-anchor" ] []
                 , text "Rotterdam"
                 ]
@@ -66,7 +67,7 @@ nav model =
                     [ a
                         [ class "menu-link"
                         , classList [ ( "selected", selected model.route Services ) ]
-                        , onClick (NavigateTo (Just Services))
+                        , onClick <| NavigateTo (Just Services)
                         ]
                         [ i [ class "fa fa-arrows" ] []
                         , text "Services"
@@ -76,7 +77,7 @@ nav model =
                     [ a
                         [ class "menu-link"
                         , classList [ ( "selected", selected model.route Clusters ) ]
-                        , onClick (NavigateTo (Just Clusters))
+                        , onClick <| NavigateTo (Just Clusters)
                         ]
                         [ i [ class "fa fa-server" ] []
                         , text "Clusters"
@@ -106,7 +107,10 @@ body model =
         Just Services ->
             View.Services.view model
 
-        Just (Routing.ShowService id) ->
+        Just NewService ->
+            View.Services.New.view model
+
+        Just (ShowService id) ->
             View.Services.Show.view model
 
         Just Clusters ->

@@ -3,9 +3,4 @@ defmodule Rotterdam.ServiceView do
 
   def render("show.json", %{service: service}), do: service
 
-  def render("scripts.html", assigns) do
-    ~E"""
-    <script src="<%= static_path(@conn, "/js/services.js") %>"></script>
-    """
-  end
 end
