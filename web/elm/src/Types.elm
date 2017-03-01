@@ -9,6 +9,17 @@ type alias Service =
     }
 
 
+type alias ServiceForm =
+    { name : String
+    , image : String
+    }
+
+
+type FormField
+    = Name String
+    | Image String
+
+
 type alias DockerEvent =
     { nodeLabel : String
     , container : String

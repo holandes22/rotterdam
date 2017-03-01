@@ -5,7 +5,7 @@ import Routing
 import Navigation
 import Phoenix.Socket
 import Json.Encode as Encode
-import Types exposing (Service, Cluster)
+import Types exposing (Service, Cluster, FormField)
 import RemoteData exposing (WebData)
 
 
@@ -23,3 +23,4 @@ type Msg
     | GetCluster
     | GotCluster (WebData Cluster)
     | ActivateCluster
+    | UpdateServiceForm FormField

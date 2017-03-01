@@ -18,6 +18,7 @@ type alias Model =
     , events : List DockerEvent
     , cluster : WebData Cluster
     , sideMenuActive : Bool
+    , serviceForm : Maybe ServiceForm
     }
 
 
@@ -44,4 +45,5 @@ initialModel route stateSocket eventsSocket cluster_ =
         , events = []
         , cluster = RemoteData.Success cluster
         , sideMenuActive = True
+        , serviceForm = Nothing
         }

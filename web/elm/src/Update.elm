@@ -8,7 +8,7 @@ import UrlParser as Url
 import Routing exposing (..)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
-import Types exposing (Service)
+import Types exposing (Service, FormField(..))
 import Json.Decode exposing (decodeValue, field)
 import Decoders
     exposing
@@ -139,3 +139,20 @@ update msg model =
             ( { model | cluster = RemoteData.Loading }
             , connectCluster model.baseUrl
             )
+
+        UpdateServiceForm field ->
+            let
+                form =
+                    Maybe.withDefault { name = "", image = "" } model.serviceForm
+
+                serviceForm =
+                    case field of
+                        Name name ->
+                            { form | name = name }
+
+                        Image image ->
+                            { form | image = image }
+            in
+                ( { model | serviceForm = Just serviceForm }
+                , Cmd.none
+                )
