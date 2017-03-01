@@ -1,7 +1,7 @@
 module View.Services.New exposing (view)
 
 import Html exposing (..)
-import Html.Events exposing (onInput)
+import Html.Events exposing (onInput, onClick)
 import Html.Attributes exposing (attribute, value, class, name, placeholder, type_)
 import Model exposing (Model)
 import Msg exposing (Msg(..))
@@ -43,6 +43,7 @@ view model =
                         []
                     ]
                 ]
-            , div [ class "ui button", attribute "tabindex" "0" ]
+              -- TODO: enable submit only if form is valid
+            , div [ class "ui button", attribute "tabindex" "0", onClick CreateService ]
                 [ text "Create" ]
             ]

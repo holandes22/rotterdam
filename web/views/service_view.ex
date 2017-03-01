@@ -3,4 +3,6 @@ defmodule Rotterdam.ServiceView do
 
   def render("show.json", %{service: service}), do: service
 
+  def render("created.json", %{id: id}), do: id
+
 end

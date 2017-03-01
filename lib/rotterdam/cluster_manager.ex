@@ -30,6 +30,8 @@ defmodule Rotterdam.ClusterManager do
   def services, do: GenServer.call(__MODULE__, :services)
   def services(id), do: GenServer.call(__MODULE__, {:services, id})
 
+  def create_service(name, image), do: GenServer.call(__MODULE__, {:create_service, name, image})
+
   def containers_per_node, do: GenServer.call(__MODULE__, :containers_per_node)
 
   def clear_conn, do: GenServer.call(__MODULE__, :clear_conn)
@@ -98,6 +100,16 @@ defmodule Rotterdam.ClusterManager do
       |> Service.normalize()
 
     {:reply, {:ok, reply}, state}
+  end
+
+  def handle_call({:create_service, name, image}, _from, state) do
+    reply =
+      state
+      |> get_conn()
+      |> Dox.create_service(name, image)
+
+    {:reply, reply, state}
+
   end
 
   def handle_call(:containers_per_node, _from, state) do

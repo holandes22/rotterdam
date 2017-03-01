@@ -25,6 +25,7 @@ defmodule Rotterdam.Router do
     get "/cluster", ClusterController, :index
     post "/cluster/connect", ClusterController, :connect
     get "/services/:id", ServiceController, :show
+    post "/services", ServiceController, :create
 
   end
 

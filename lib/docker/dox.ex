@@ -71,8 +71,8 @@ defmodule Dox do
   def remove_service(conn, id) do
     conn
       |> put_path("/services/#{id}")
-      |> delete
-      |> response
+      |> delete()
+      |> response()
   end
 
   def events(%Maxwell.Conn{url: url, opts: opts}, stream_to) do

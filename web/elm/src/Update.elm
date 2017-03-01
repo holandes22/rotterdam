@@ -17,7 +17,7 @@ import Decoders
         , clusterDecoder
         , dockerEventDecoder
         )
-import API exposing (getCluster, connectCluster)
+import API
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -125,9 +125,35 @@ update msg model =
                     in
                         model ! []
 
+        CreateService ->
+            let
+                cmd =
+                    case model.serviceForm of
+                        Nothing ->
+                            Cmd.none
+
+                        Just form ->
+                            API.createService model.baseUrl form
+            in
+                ( { model | serviceForm = Nothing }
+                , cmd
+                )
+
+        ServiceCreated result ->
+            case result of
+                Ok id ->
+                    model ! [ Navigation.newUrl (urlFor Services) ]
+
+                Err err ->
+                    let
+                        _ =
+                            Debug.log "err" err
+                    in
+                        model ! []
+
         GetCluster ->
             ( { model | cluster = RemoteData.Loading }
-            , getCluster model.baseUrl
+            , API.getCluster model.baseUrl
             )
 
         GotCluster cluster ->
@@ -137,7 +163,7 @@ update msg model =
 
         ActivateCluster ->
             ( { model | cluster = RemoteData.Loading }
-            , connectCluster model.baseUrl
+            , API.connectCluster model.baseUrl
             )
 
         UpdateServiceForm field ->

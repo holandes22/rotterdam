@@ -20,6 +20,8 @@ type Msg
     | ReceiveDockerEvent Encode.Value
     | GetService String
     | GotService (Result Http.Error Service)
+    | CreateService
+    | ServiceCreated (Result Http.Error String)
     | GetCluster
     | GotCluster (WebData Cluster)
     | ActivateCluster
