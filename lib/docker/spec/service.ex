@@ -12,9 +12,10 @@ defmodule Docker.Spec.Service do
     },
     labels: %{}
 
-  def config_struct(name, image) do
+  def config_struct(name, image, replicas \\ 1) do
     %__MODULE__{name: name}
       |> format_keys
+      |> put_in(["Mode", "Replicated", "Replicas"], replicas)
       |> put_in(["TaskTemplate", "ContainerSpec", "Image"], image)
   end
 end
