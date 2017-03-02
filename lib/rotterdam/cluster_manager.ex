@@ -103,12 +103,14 @@ defmodule Rotterdam.ClusterManager do
   end
 
   def handle_call({:create_service, name, image}, _from, state) do
-    reply =
+    response =
       state
       |> get_conn()
       |> Dox.create_service(name, image)
 
-    {:reply, reply, state}
+    {:ok, %{"ID" => id}} = response
+
+    {:reply, {:ok, id}, state}
 
   end
 

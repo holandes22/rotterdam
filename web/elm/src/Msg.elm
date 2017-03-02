@@ -21,7 +21,7 @@ type Msg
     | GetService String
     | GotService (Result Http.Error Service)
     | CreateService
-    | ServiceCreated (Result Http.Error String)
+    | ServiceCreated (Result Http.Error Service)
     | GetCluster
     | GotCluster (WebData Cluster)
     | ActivateCluster

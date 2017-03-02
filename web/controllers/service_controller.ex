@@ -15,10 +15,11 @@ defmodule Rotterdam.ServiceController do
   def create(conn, %{"name" => name, "image" => image}) do
     # TODO: deal with errors
     {:ok, id} = ClusterManager.create_service(name, image)
+    {:ok, service} = ClusterManager.services(id)
 
     conn
     |> put_status(:created)
-    |> render("created.json", id: id)
+    |> render("show.json", service: service)
 
   end
 

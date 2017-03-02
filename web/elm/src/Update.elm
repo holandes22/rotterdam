@@ -141,8 +141,14 @@ update msg model =
 
         ServiceCreated result ->
             case result of
-                Ok id ->
-                    model ! [ Navigation.newUrl (urlFor Services) ]
+                Ok service ->
+                    let
+                        services =
+                            model.services ++ [ service ]
+                    in
+                        ( { model | services = services }
+                        , Navigation.newUrl (urlFor Services)
+                        )
 
                 Err err ->
                     let
