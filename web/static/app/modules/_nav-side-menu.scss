@@ -1,10 +1,10 @@
-$menu-width-value: 19;
+$menu-width-value: 20;
 $menu-width: #{$menu-width-value}em;
 $menu-link-size: 0.95em;
 
 
 $text-color: $light-grey;
-$selected-color: $dark-blue;
+$selected-color: $dark-grey;
 
 
 #layout, #nav-side-menu {
@@ -27,19 +27,19 @@ $selected-color: $dark-blue;
   top: 0;
   left: 0;
   bottom: 0;
-  background: $dark-grey;
+  background: $dark-orange;
   overflow-y: auto;
 
   &.active {
     left: $menu-width;
 
-    .link  {
+    .menu-open-link  {
       display: none;
     }
 
   }
 
-  .link {
+  .menu-open-link {
     position: fixed;
     display: block;
     top: 0;
@@ -55,7 +55,7 @@ $selected-color: $dark-blue;
 
   }
 
-  .close {
+  .menu-close-link {
     display: block;
     cursor: pointer;
     position: absolute;
@@ -65,7 +65,7 @@ $selected-color: $dark-blue;
     text-shadow: 0 2px 0 rgba(255,255,255,0.2);
 
     &:hover {
-      color: rgba(0,0,0,0.8);
+      color: rgba(0,0,0,0.4);
     }
 
   }
@@ -79,8 +79,9 @@ $selected-color: $dark-blue;
 
   .menu-heading {
     margin: 0;
+    text-shadow: 0 0 1px rgba(0,0,0,.1);
     padding: 1em;
-    font-size: 1.8em;
+    font-size: 2em;
     text-align: center;
     text-transform: uppercase;
     color: rgba(0,0,0,0.8);
@@ -105,7 +106,7 @@ $selected-color: $dark-blue;
     transition: background 0.3s;
 
     &.selected {
-      background: $selected-color;
+      background: rgba($selected-color, .2);
     }
 
     &.disabled {
@@ -116,7 +117,7 @@ $selected-color: $dark-blue;
 
     &:hover, &:focus {
       &:not(.selected) {
-        background: rgba($selected-color, 0.5);
+        background: rgba($selected-color, .4);
       }
     }
 

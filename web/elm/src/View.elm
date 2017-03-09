@@ -13,6 +13,7 @@ import View.Services.Show
 import View.Services.New
 import View.Clusters
 import API exposing (getCluster, connectCluster)
+import Bootstrap.Grid as Grid
 
 
 view : Model -> Html Msg
@@ -21,39 +22,29 @@ view model =
         [ header
         , div [ id "layout", classList [ ( "active", model.sideMenuActive ) ] ]
             [ nav model
-            , main_ [ attribute "role" "main" ] [ body model ]
+            , Grid.container []
+                [ main_ [ attribute "role" "main" ] [ body model ]
+                ]
             , View.Events.view model
             ]
         ]
 
 
 header =
-    div [ class "ui top fixed huge inverted menu" ]
-        [ div [ class "right menu" ]
-            [ div [ class "ui simple dropdown icon item" ]
-                [ i [ class "bars icon" ]
-                    []
-                , div [ class "menu" ]
-                    [ div [ class "item" ]
-                        [ i [ class "terminal icon " ] [], text "choice 1" ]
-                    , div [ class "item" ]
-                        [ text "Choice 2" ]
-                    , div [ class "item" ]
-                        [ text "Choice 3" ]
-                    ]
-                ]
-            ]
+    node "nav"
+        [ class "navbar navbar-light bg-faded" ]
+        [ span [ class "navbar-text" ] [ text "" ]
         ]
 
 
 nav : Model -> Html Msg
 nav model =
     div [ id "nav-side-menu", classList [ ( "active", model.sideMenuActive ) ] ]
-        [ a [ class "link", onClick OpenSideMenu ]
+        [ a [ class "menu-open-link", onClick OpenSideMenu ]
             [ i [ class "fa fa-bars" ]
                 []
             ]
-        , a [ class "close", onClick CloseSideMenu ]
+        , a [ class "menu-close-link", onClick CloseSideMenu ]
             [ i [ class "fa fa-close" ]
                 []
             ]

@@ -59,8 +59,7 @@ module.exports = [
     entry: {
       vendor: [
         "normalize.css",
-        "font-awesome-loader",
-        "semantic-ui-css/semantic.css",
+        "font-awesome-loader"
       ],
       app: [
         "./web/static/app/app.scss",

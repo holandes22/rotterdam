@@ -44,6 +44,6 @@ viewNode node =
 viewClusterConnect : Cluster -> Html Msg
 viewClusterConnect cluster =
     if not cluster.connected then
-        div [ class "ui button", onClick ActivateCluster ] [ text "Connect" ]
+        button [ class "btn btn-outline-primary", onClick ActivateCluster ] [ text "Connect" ]
     else
         div [] []

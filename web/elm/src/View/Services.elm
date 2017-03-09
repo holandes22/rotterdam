@@ -7,13 +7,18 @@ import Msg exposing (Msg(..))
 import Types exposing (Service)
 import Model exposing (Model)
 import Routing exposing (Route(..))
+import Bootstrap.Grid as Grid
+import Bootstrap.Button as Button
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ button [ class "ui button", onClick (NavigateTo (Just NewService)) ] [ text "Create" ]
-        , table [ class "ui single line table" ]
+        [ Button.button
+            [ Button.outlinePrimary, Button.attrs [ onClick (NavigateTo (Just NewService)) ] ]
+            [ text "create" ]
+        , legend [] []
+        , table [ class "table" ]
             [ thead []
                 [ tr []
                     [ th [] [ text "Name" ]
