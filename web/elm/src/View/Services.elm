@@ -9,6 +9,7 @@ import Model exposing (Model)
 import Routing exposing (Route(..))
 import Bootstrap.Grid as Grid
 import Bootstrap.Button as Button
+import Bootstrap.Table as Table
 
 
 view : Model -> Html Msg
@@ -18,27 +19,25 @@ view model =
             [ Button.outlinePrimary, Button.attrs [ onClick (NavigateTo (Just NewService)) ] ]
             [ text "create" ]
         , legend [] []
-        , table [ class "table" ]
-            [ thead []
-                [ tr []
-                    [ th [] [ text "Name" ]
-                    , th [] [ text "Replicas" ]
-                    , th [] [ text "Image" ]
-                    , th [] [ text "ID" ]
-                    ]
+        , Table.simpleTable
+            ( Table.simpleThead
+                [ Table.th [] [ text "Name" ]
+                , Table.th [] [ text "Replicas" ]
+                , Table.th [] [ text "Image" ]
+                , Table.th [] [ text "ID" ]
                 ]
-            , tbody [] (List.map viewServiceRow model.services)
-            ]
+            , Table.tbody [] (List.map viewServiceRow model.services)
+            )
         ]
 
 
-viewServiceRow : Service -> Html Msg
+viewServiceRow : Service -> Table.Row Msg
 viewServiceRow service =
-    tr []
-        [ td []
+    Table.tr []
+        [ Table.td []
             [ a [ onClick (GetService service.id) ] [ text service.name ]
             ]
-        , td [] [ text (toString service.replicas) ]
-        , td [] [ text service.image ]
-        , td [] [ text service.id ]
+        , Table.td [] [ text (toString service.replicas) ]
+        , Table.td [] [ text service.image ]
+        , Table.td [] [ text service.id ]
         ]
