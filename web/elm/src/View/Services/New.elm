@@ -6,6 +6,13 @@ import Html.Attributes exposing (attribute, value, class, name, placeholder, typ
 import Model exposing (Model)
 import Msg exposing (Msg(..))
 import Types exposing (FormField(..))
+import Bootstrap.Grid as Grid
+import Bootstrap.Grid.Col as Col
+import Bootstrap.Grid.Row as Row
+import Bootstrap.Form as Form
+import Bootstrap.Form.Checkbox as Checkbox
+import Bootstrap.Form.Input as Input
+import Bootstrap.Button as Button
 
 
 view : Model -> Html Msg
@@ -14,36 +21,37 @@ view model =
         service =
             Maybe.withDefault { name = "", image = "" } model.serviceForm
     in
-        form [ class "ui form" ]
-            [ h4 [ class "ui dividing header" ]
-                [ text "Create service" ]
-            , div [ class "field" ]
-                [ label []
-                    [ text "Name" ]
-                , div [ class "field" ]
-                    [ input
-                        [ name "name"
-                        , placeholder "Name"
-                        , value service.name
-                        , type_ "text"
-                        , onInput <| UpdateServiceForm << Name
+        Form.form []
+            [ Form.row []
+                [ Form.colLabel [ Col.sm2 ] [ text "Name" ]
+                , Form.col [ Col.sm10 ]
+                    [ Input.text
+                        [ Input.attrs
+                            [ placeholder "Name"
+                            , value service.name
+                            , onInput <| UpdateServiceForm << Name
+                            ]
                         ]
-                        []
                     ]
-                , label []
-                    [ text "Image" ]
-                , div [ class "field" ]
-                    [ input
-                        [ name "image"
-                        , placeholder "Image"
-                        , value service.image
-                        , type_ "text"
-                        , onInput <| UpdateServiceForm << Image
+                ]
+            , Form.row []
+                [ Form.colLabel [ Col.sm2 ] [ text "Image" ]
+                , Form.col [ Col.sm10 ]
+                    [ Input.text
+                        [ Input.attrs
+                            [ placeholder "Image"
+                            , value service.image
+                            , onInput <| UpdateServiceForm << Image
+                            ]
                         ]
-                        []
                     ]
                 ]
               -- TODO: enable submit only if form is valid
-            , div [ class "ui button", attribute "tabindex" "0", onClick CreateService ]
-                [ text "Create" ]
+            , Form.row [ Row.rightSm ]
+                [ Form.col [ Col.sm2 ]
+                    [ Button.button
+                        [ Button.primary, Button.attrs [ class "float-right", onClick CreateService ] ]
+                        [ text "Create" ]
+                    ]
+                ]
             ]

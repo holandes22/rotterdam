@@ -6,7 +6,7 @@
 
   tasks:
     - name: "create docker machines"
-      local_action: command docker-machine create --driver virtualbox cluster{{ cluster_id }}-node{{ item }}
+      local_action: command docker-machine create cluster{{ cluster_id }}-node{{ item }} --virtualbox-boot2docker-url=https://github.com/boot2docker/boot2docker/releases/download/v1.12.6/boot2docker.iso
       with_sequence: start=1 end={{ number_of_nodes }}
       register: result
       changed_when: "'Host already exists' not in result.stderr"
